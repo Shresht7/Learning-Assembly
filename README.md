@@ -4,6 +4,32 @@ Assembly is the lowest-level human-readable programming language. It maps direct
 
 ---
 
+## Repository
+
+### Requirements
+
+- `nasm`
+- `gdb`
+
+```sh
+sudo dnf install nasm gdb make
+```
+
+### To compile the `.asm` files
+
+```sh
+nasm -f elf64 ./src/hello.asm -o ./obj/hello.o
+ld ./obj/hello.o -o ./out/hello
+```
+
+### To run the compiled binary
+
+```sh
+./out/hello
+```
+
+---
+
 ## System Architecture
 
 Different architectures need different assembly as they have different registers and syscalls.
