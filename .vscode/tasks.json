@@ -1,0 +1,61 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Assemble",
+            "command": "nasm",
+            "type": "shell",
+            "args": [
+                "-f",
+                "elf64",
+                "${file}",
+                "-o",
+                "./obj/${fileBasenameNoExtension}.o"
+            ],
+            "problemMatcher": [
+                {
+                    "fileLocation": [
+                        "absolute"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):\\s*(error|warning):\\s*(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "severity": 3,
+                        "message": 4
+                    }
+                }
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
+            "label": "Link",
+            "type": "shell",
+            "command": "ld",
+            "args": [
+                "./obj/${fileBasenameNoExtension}.o",
+                "-o",
+                "./out/${fileBasenameNoExtension}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Execute",
+            "type": "shell",
+            "command": "./out/${fileBasenameNoExtension}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Assemble, Link and Execute",
+            "dependsOn": [
+                "Assemble",
+                "Link",
+                "Execute"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}
