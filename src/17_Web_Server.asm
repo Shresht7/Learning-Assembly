@@ -51,6 +51,7 @@ section .bss
 ; DEFINITIONS
 ; -----------
 
+%define SYS_READ    0       ; Syscall: Read
 %define SYS_WRITE   1       ; Syscall: Write
 %define SYS_SOCKET  41      ; Syscall: Socket
 %define SYS_ACCEPT  43      ; Syscall: Accept Connection
@@ -134,6 +135,11 @@ _start:
     ; Print Connection Message
     print_msg connection_msg
 
+    ; Read HTTP request: read(client_fd, buffer, size)
+    call read_http_request
+
+    ; This is where we would parse the http request. Keeping it simple for now.
+
 ; CREATE SOCKET
 ; -------------
 
@@ -183,6 +189,19 @@ listen:
     ; Check error
     test rax, rax
     js .error
+    ret
+
+; READ HTTP REQUEST
+; -----------------
+
+; Function: read_http_request
+; read(client_fd, buffer, size)
+read_http_request:
+    mov rax, SYS_READ
+    mov rdi, r13                ; Saved client file descriptor
+    mov rsi, request_buffer     ; The buffer to save the request in
+    mov rdx, 4096               ; Number of bytes reserved for the request
+    syscall
     ret
 
 ; ERROR BRANCH
