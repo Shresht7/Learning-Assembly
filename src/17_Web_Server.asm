@@ -53,7 +53,9 @@ section .bss
 
 %define SYS_WRITE   1       ; Syscall: Write
 %define SYS_SOCKET  41      ; Syscall: Socket
+%define SYS_ACCEPT  43      ; Syscall: Accept Connection
 %define SYS_BIND    49      ; Syscall: Bind Socket
+%define SYS_LISTEN  50      ; Syscall: Listen
 %define SYS_EXIT    60      ; Syscall: Exit
 
 %define STDIN  0        ; File Descriptor for STDIN
@@ -110,6 +112,28 @@ _start:
     ; Bind socket: bind(socketfd, &sockaddr, sizeof(sockaddr))
     call bind_socket
 
+    ; Listen for connection: listen(socketfd, backlog)
+    call listen
+
+.accept_loop:
+    ; Accept connection: accept(sockfd, &client_addr, &client_addr_len)
+    mov qword [client_addr_len], 16             ; dw (2) + dw (2) + dd (4) + dq (8) = 16
+
+    mov rax, SYS_ACCEPT
+    mov rdi, r12                        ; Saved socket file descriptor in R12
+    mov rsi, client_addr                ; Client address buffer
+    mov rdx, client_addr_len            ; Client address buffer length
+    syscall
+
+    ; Check for error
+    test rax, rax
+    js .accept_loop                     ; On error, try again
+
+    mov r13, rax                        ; Save client socket fd in R13
+
+    ; Print Connection Message
+    print_msg connection_msg
+
 ; CREATE SOCKET
 ; -------------
 
@@ -143,6 +167,23 @@ bind_socket:
     ; Check for error
     test rax, rax
     js .bind_error
+    ret
+
+; LISTEN
+; ------
+
+; Function: listen
+; listen(socketfd, backlog)
+listen:
+    mov rax, SYS_LISTEN
+    mov rdi, r12            ; Saved socket file-descriptor
+    mov rsi, 10             ; Backlog (max queued connections)
+    syscall
+
+    ; Check error
+    test rax, rax
+    js .error
+    ret
 
 ; ERROR BRANCH
 ; ------------
