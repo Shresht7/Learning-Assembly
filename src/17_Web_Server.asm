@@ -140,6 +140,9 @@ _start:
 
     ; This is where we would parse the http request. Keeping it simple for now.
 
+    ; Send HTTP response: write(client_fd, response, length)
+    call send_http_response
+
 ; CREATE SOCKET
 ; -------------
 
@@ -201,6 +204,19 @@ read_http_request:
     mov rdi, r13                ; Saved client file descriptor
     mov rsi, request_buffer     ; The buffer to save the request in
     mov rdx, 4096               ; Number of bytes reserved for the request
+    syscall
+    ret
+
+; SEND HTTP RESPONSE
+; ------------------
+
+; Function: send_http_response
+; write(client_fd, response, length)
+send_http_response:
+    mov rax, SYS_WRITE
+    mov rdi, r13                ; Client file descriptor
+    mov rsi, http_response      ; HTTP Response buffer to write
+    mov rdx, http_response_len  ; Length of the HTTP response buffer
     syscall
     ret
 
