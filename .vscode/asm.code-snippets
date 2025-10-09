@@ -1,0 +1,26 @@
+{
+    "Define Macro": {
+        "prefix": "%macro",
+        "body": [
+            "%macro ${1:name} ${2:0}",
+            "\t$3",
+            "%endmacro",
+            "$0"
+        ]
+    },
+    "Define Bytes": {
+        "prefix": "db",
+        "body": [
+            "${1:name} db '${2:contents}', ${3|0,0xA|}",
+            "$0"
+        ]
+    },
+    "Define Bytes with Length": {
+        "prefix": "dbl",
+        "body": [
+            "${1:name} db '${2:contents}', ${3|0,0xA|}",
+            "${1:name}_len equ $ - ${1:name}",
+            "$0"
+        ]
+    }
+}
