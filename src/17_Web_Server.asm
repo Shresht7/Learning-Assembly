@@ -53,6 +53,7 @@ section .bss
 
 %define SYS_WRITE   1       ; Syscall: Write
 %define SYS_SOCKET  41      ; Syscall: Socket
+%define SYS_BIND    49      ; Syscall: Bind Socket
 %define SYS_EXIT    60      ; Syscall: Exit
 
 %define STDIN  0        ; File Descriptor for STDIN
@@ -67,7 +68,15 @@ section .bss
 ; MACROS
 ; ------
 
-%macro print_msg 2
+%macro write 2
+    mov rax, SYS_WRITE
+    mov rdi, %1
+    mov rsi, %2
+    mov rdx, %2_len
+    syscall
+%endmacro
+
+%macro print_msg 1
     mov rax, SYS_WRITE
     mov rdi, STDOUT
     mov rsi, %1
@@ -98,6 +107,9 @@ _start:
     ; Save socket file descriptor (returned as rax) in r12
     mov r12, rax
 
+    ; Bind socket: bind(socketfd, &sockaddr, sizeof(sockaddr))
+    call bind_socket
+
 ; CREATE SOCKET
 ; -------------
 
@@ -116,11 +128,31 @@ create_socket:
     js .error
     ret ; Return RAX if no error
 
+; BIND SOCKET
+; -----------
+
+; Function: bind_socket
+; bind(socketfd, &socketaddr, sizeof(sockaddr))
+bind_socket:
+    mov rax, SYS_BIND
+    mov rdi, r12            ; Socket File Descriptor Saved in R12
+    mov rsi, sockaddr
+    mov rdx, 16             ; Size of sockaddr: dw (2) + dw (2) + dd (4) + dq (8) = 16
+    syscall
+
+    ; Check for error
+    test rax, rax
+    js .bind_error
+
 ; ERROR BRANCH
 ; ------------
 
 .error:
     error
+
+.bind_error:
+    write STDERR bind_error
+    jmp .exit
 
 ; EXIT BRANCH
 ; -----------
