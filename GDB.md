@@ -1,5 +1,51 @@
 # GDB
 
+## Quick Reference
+
+```bash
+# Starting
+gdb ./program               # Start GDB
+gdb --args ./prog arg1      # Start with arguments
+
+# Breakpoints
+break _start                # Break at label
+break *0x401000             # Break at address
+break file.asm:10           # Break at line
+delete 1                    # Delete breakpoint 1
+info breakpoints            # List all breakpoints
+
+# Running
+run                         # Start program
+continue                    # Continue execution
+stepi                       # Execute one instruction
+nexti                       # Next instruction (skip calls)
+finish                      # Run until function returns
+
+# Examining
+info registers              # Show all registers
+print $rax                  # Print RAX register
+print/x $rax                # Print RAX register in hexadecimal
+x/10i $rip                  # Show next 10 instructions
+x/5dg 0x402000              # Show 5 quad-words at address
+display $rax                # Auto-display after each step
+
+# Memory
+x/s address                 # View as string
+x/10xb address              # View 10 bytes in hexadecimal
+x/i address                 # View as instruction
+set $rax = 100              # Modify register
+set {long}0x402000 = 99     # Modify memory
+
+# Other
+backtrace                   # Show call stack
+info frame                  # Show current stack frame
+layout asm                  # Show assembly in TUI mode
+layout regs                 # Show registers in TUI mode
+quit                        # Exit GDB
+```
+
+---
+
 ## Display Formats
 
 ### Decimal
