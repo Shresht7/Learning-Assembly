@@ -53,6 +53,7 @@ section .bss
 
 %define SYS_READ    0       ; Syscall: Read
 %define SYS_WRITE   1       ; Syscall: Write
+%define SYS_CLOSE   3       ; Syscall: Close
 %define SYS_SOCKET  41      ; Syscall: Socket
 %define SYS_ACCEPT  43      ; Syscall: Accept Connection
 %define SYS_BIND    49      ; Syscall: Bind Socket
@@ -71,14 +72,6 @@ section .bss
 ; MACROS
 ; ------
 
-%macro write 2
-    mov rax, SYS_WRITE
-    mov rdi, %1
-    mov rsi, %2
-    mov rdx, %2_len
-    syscall
-%endmacro
-
 %macro print_msg 1
     mov rax, SYS_WRITE
     mov rdi, STDOUT
@@ -87,7 +80,15 @@ section .bss
     syscall
 %endmacro
 
-%macro exit 1
+%macro print_err 1
+    mov rax, SYS_WRITE
+    mov rdi, STDERR
+    mov rsi, %1
+    mov rdx, %1_len
+    syscall
+%endmacro
+
+%macro exit_code 1
     mov rax, SYS_EXIT
     mov rdi, %1
     syscall
@@ -143,6 +144,12 @@ _start:
     ; Send HTTP response: write(client_fd, response, length)
     call send_http_response
 
+    ; Close the client connection: close(client_fd)
+    call close_connection
+
+    ; Loop back to accept next connection
+    jmp .accept_loop
+
 ; CREATE SOCKET
 ; -------------
 
@@ -161,6 +168,9 @@ create_socket:
     js .error
     ret ; Return RAX if no error
 
+    .error:
+        exit_code 1
+
 ; BIND SOCKET
 ; -----------
 
@@ -178,6 +188,13 @@ bind_socket:
     js .bind_error
     ret
 
+    .bind_error:
+        print_err bind_error
+        jmp .exit
+
+    .exit:
+        exit_code 1
+
 ; LISTEN
 ; ------
 
@@ -193,6 +210,9 @@ listen:
     test rax, rax
     js .error
     ret
+
+    .error:
+        exit_code 1
 
 ; READ HTTP REQUEST
 ; -----------------
@@ -220,22 +240,23 @@ send_http_response:
     syscall
     ret
 
-; ERROR BRANCH
-; ------------
+; CLOSE CONNECTION
+; ----------------
 
-.error:
-    exit 1
-
-.bind_error:
-    write STDERR bind_error
-    jmp .exit
+; Function: close_connection
+; close(client_fd)
+close_connection:
+    mov rax, SYS_CLOSE      ; Syscall to close
+    mov rdi, r13            ; Client file descriptor
+    syscall
+    ret
 
 ; EXIT BRANCH
 ; -----------
 
-.exit:
+exit:
     ; Close Server Socket
-    mov rax, 3          ; Syscall: Close Socket?
+    mov rax, SYS_CLOSE  ; Syscall: Close
     mov rdi, r12        ; Move socket fd into rdi as the argument
     syscall
-    exit 0              ; Exit with status code 0
+    exit_code 0         ; Exit with status code 0
