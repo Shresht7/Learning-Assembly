@@ -28,6 +28,17 @@ ld ./obj/hello.o -o ./out/hello
 ./out/hello
 ```
 
+### To debug with GDB, compile with debug symbols:
+
+```sh
+# Add -g flag for debug info
+nasm -f elf64 -g -F dwarf debug_test.asm -o debug_test.o
+ld debug_test.o -o debug_test
+```
+
+- `-g`: Include debug info
+- `-F dwarf`: Use DWARF debug format
+
 ---
 
 ## System Architecture
