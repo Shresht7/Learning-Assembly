@@ -224,7 +224,7 @@ send_http_response:
 ; ------------
 
 .error:
-    error
+    exit 1
 
 .bind_error:
     write STDERR bind_error
