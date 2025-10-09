@@ -161,6 +161,28 @@ While you _can_ use any general-purpose register for anything, there are some tr
 - `RBP`: Base Pointer (Stack Frame Base)
 - `RSP`: Stack Pointer (Top of Stack). **Don't touch it. Stack will break!**
 
+---
+
+## References
+
+- [Chromium Linux Syscalls Table](https://www.chromium.org/chromium-os/developer-library/reference/linux-constants/syscalls/#x86_64-64-bit)
+
+- https://cpulator.01xz.net/
+
+- [Assembly Language in 100 seconds - Fireship YouTube](https://www.youtube.com/watch?v=4gwYkEK0gOk)
+- [Assembly Language & Computer Architecture - MIT OCW YouTube](https://www.youtube.com/watch?v=L1ung0wil9Y)
+- [Machine Code Explained - Computerphile YouTube](https://www.youtube.com/watch?v=8VsiYWW9r48)
+- [Hello Assembly! Retrocoding the smallest Windows App in x86 - Dave's Garage YouTube](https://www.youtube.com/watch?v=b0zxIfJJLAY)
+- [Forget C Assembly is all you need - Tsoding YouTube](https://www.youtube.com/watch?v=hzjBdIJ9Ycs)
+- [Web in Native Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=b-q4QBy52AA)
+- [To-Do App in Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=WnBXLmKk_qw)
+- [Assembly Language Programming with ARM - freeCodeCamp YouTube](https://www.youtube.com/watch?v=gfmRrPjnEw4)
+- [You can learn assembly in 10 minutes - Low Level YouTube](https://www.youtube.com/watch?v=6S5KRJv-7RU)
+- [Practical ARM Assembly Tutorial - LaurieWired YouTube](https://www.youtube.com/playlist?list=PLn_It163He32Ujm-l_czgEBhbJjOUgFhg)
+- [You can learn ARM assembly in 15 minutes - Low Level YouTube](https://www.youtube.com/watch?v=FV6P5eRmMh8)
+
+---
+
 TODO: List out all Registers in x86-64
 TODO: Syscall table
 TODO: CISC vs RISC. Explain RISC
