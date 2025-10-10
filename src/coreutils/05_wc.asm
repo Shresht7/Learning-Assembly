@@ -123,7 +123,7 @@ _start:
     cmp byte [in_word], 0
     jne .still_in_word
 
-    inc qword [word]
+    inc qword [words]
     mov byte [in_word], 1
 
 .still_in_word:
@@ -139,6 +139,7 @@ _start:
     ret
 
 ; Print counts in format: lines words bytes
+.print_counts:
     mov rax, [lines]
     call .print_num
 
@@ -229,3 +230,5 @@ _start:
     mov rax, 60
     xor rdi, rdi
     syscall
+
+; FIXME: Doesnt Print Numbers!
