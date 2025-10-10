@@ -163,26 +163,39 @@ While you _can_ use any general-purpose register for anything, there are some tr
 
 ---
 
-## References
+## 📕 References
 
-- [Chromium Linux Syscalls Table](https://www.chromium.org/chromium-os/developer-library/reference/linux-constants/syscalls/#x86_64-64-bit)
+- [NASM: The Netwide Assembler](https://www.nasm.us/)
 
-- https://cpulator.01xz.net/
+### 📄 Manuals
 
-- [Assembly Language in 100 seconds - Fireship YouTube](https://www.youtube.com/watch?v=4gwYkEK0gOk)
-- [Assembly Language & Computer Architecture - MIT OCW YouTube](https://www.youtube.com/watch?v=L1ung0wil9Y)
-- [Machine Code Explained - Computerphile YouTube](https://www.youtube.com/watch?v=8VsiYWW9r48)
-- [Hello Assembly! Retrocoding the smallest Windows App in x86 - Dave's Garage YouTube](https://www.youtube.com/watch?v=b0zxIfJJLAY)
-- [Forget C Assembly is all you need - Tsoding YouTube](https://www.youtube.com/watch?v=hzjBdIJ9Ycs)
-- [Web in Native Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=b-q4QBy52AA)
-- [To-Do App in Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=WnBXLmKk_qw)
-- [Assembly Language Programming with ARM - freeCodeCamp YouTube](https://www.youtube.com/watch?v=gfmRrPjnEw4)
-- [You can learn assembly in 10 minutes - Low Level YouTube](https://www.youtube.com/watch?v=6S5KRJv-7RU)
-- [Practical ARM Assembly Tutorial - LaurieWired YouTube](https://www.youtube.com/playlist?list=PLn_It163He32Ujm-l_czgEBhbJjOUgFhg)
-- [You can learn ARM assembly in 15 minutes - Low Level YouTube](https://www.youtube.com/watch?v=FV6P5eRmMh8)
+- 📄 [Chromium Linux Syscalls Table](https://www.chromium.org/chromium-os/developer-library/reference/linux-constants/syscalls/#x86_64-64-bit)
+- 📄 [Linux Syscalls Table](https://lxr.linux.no/linux+v3.2/arch/x86/include/asm/unistd_64.h)
+
+### 🖥️ Emulators
+
+- 🖥️ [CPULator: Emulator](https://cpulator.01xz.net/)
+
+### 🌐 Articles and Blogs
+
+- 📄 [Building a Web Server in Assembly - fr4nkFletcher.github.io](https://fr4nkfletcher.github.io/posts/Building_a_webserver_in_Assembly/#:~:text=In%20this%20post%2C%20we%20will%20explore%20how%20to,dive%20deep%20into%20how%20low-level%20socket%20programming%20works.)
+
+### 📽️ Videos
+
+- 📽️ [Assembly Language in 100 seconds - Fireship YouTube](https://www.youtube.com/watch?v=4gwYkEK0gOk)
+- 📽️ [Assembly Language & Computer Architecture - MIT OCW YouTube](https://www.youtube.com/watch?v=L1ung0wil9Y)
+- 📽️ [Machine Code Explained - Computerphile YouTube](https://www.youtube.com/watch?v=8VsiYWW9r48)
+- 📽️ [Hello Assembly! Retrocoding the smallest Windows App in x86 - Dave's Garage YouTube](https://www.youtube.com/watch?v=b0zxIfJJLAY)
+- 📽️ [Forget C Assembly is all you need - Tsoding YouTube](https://www.youtube.com/watch?v=hzjBdIJ9Ycs)
+- 📽️ [Web in Native Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=b-q4QBy52AA)
+- 📽️ [To-Do App in Assembly - Tsoding YouTube](https://www.youtube.com/watch?v=WnBXLmKk_qw)
+- 📽️ [Assembly Language Programming with ARM - freeCodeCamp YouTube](https://www.youtube.com/watch?v=gfmRrPjnEw4)
+- 📽️ [Practical ARM Assembly Tutorial - LaurieWired YouTube](https://www.youtube.com/playlist?list=PLn_It163He32Ujm-l_czgEBhbJjOUgFhg)
+- 📽️ [You can learn assembly in 10 minutes - Low Level YouTube](https://www.youtube.com/watch?v=6S5KRJv-7RU)
+- 📽️ [You can learn ARM assembly in 15 minutes - Low Level YouTube](https://www.youtube.com/watch?v=FV6P5eRmMh8)
 
 ---
 
-TODO: List out all Registers in x86-64
-TODO: Syscall table
-TODO: CISC vs RISC. Explain RISC
+## 📄 License
+
+This repository is licensed under the [MIT License](./LICENSE).
