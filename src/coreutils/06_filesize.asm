@@ -7,8 +7,13 @@ section .data
     err_msg db "Error", 10
     err_len equ $ - err_msg
 
+    dir_msg db ": is a directory", 10
+    dir_len equ $ - dir_msg
+
 section .bss
     buf_digits resb 32          ; buffer for integer -> string (enough for 64-bit decimal + newline)
+
+    statbuf resb 144            ; buffer for struct stat
 
 section .text
     global _start
@@ -34,6 +39,21 @@ _start:
     test rax, rax
     js .sys_error
     mov r12, rax                ; save file descriptor in r12
+
+    ; fstat(fd, &statbuf)
+    mov rax, 5                  ; SYS_fstat
+    mov rdi, r12
+    lea rsi, [rel statbuf]
+    syscall
+
+    test rax, rax
+    js .close_and_error
+
+    ; check st_mode at offset 24 (on x86_64) Linux
+    mov rax, [statbuf + 24]
+    and ax, 0xF000
+    cmp ax, 0x4000              ; S_IFDIR?
+    je .is_directory
 
     ; lseek(fd, 0, SEEK_END)
     mov rax, 8                  ; SYS_lseek
@@ -101,6 +121,41 @@ _start:
     ; exit 0
     mov rax, 60
     xor rdi, rdi
+    syscall
+
+.is_directory:
+    ; print "<path>: is a directory"
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, [rsp + 8 + 8]
+    mov rdx, 0
+.print_path:
+    mov al, [rsi + rdx]
+    cmp al, 0
+    je .after_path
+    inc rdx
+    jmp .print_path
+.after_path:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, [rsp + 8 + 8]
+    syscall                     ; Prints filename
+
+    ; Print directory message
+    mov rax, 1
+    mov rdi, 1
+    lea rsi, [rel dir_msg]
+    mov rdx, dir_len
+    syscall
+
+    ; close fd
+    mov rax, 3
+    mov rdi, r12
+    syscall
+
+    ; exit 0
+    mov rax, 60
+    mov rdi, 2
     syscall
 
 .usage:
