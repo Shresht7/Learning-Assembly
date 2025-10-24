@@ -8,7 +8,7 @@
 
 section .data
     err_msg db "Error deleting file", 0xA
-    err_len $ - err_msg
+    err_len equ $ - err_msg
 
     usage_msg db "Usage: rm <file>", 0xA
     usage_len equ $ - usage_msg
