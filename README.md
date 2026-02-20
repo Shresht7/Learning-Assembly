@@ -45,7 +45,7 @@ ld debug_test.o -o debug_test
 
 Different architectures need different assembly as they have different registers and syscalls.
 
->![TIP]
+>[!TIP]
 > To check the system architecture use the `uname -m` or `arch` command.
 > - `x86-64` or `AMD64` or `Intel 64`: 64-bit Intel/AMD (this repository assumes this architecture)
 > - `i686` or `i386`: 32-bit Intel/AMD
