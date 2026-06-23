@@ -161,6 +161,27 @@ While you _can_ use any general-purpose register for anything, there are some tr
 - `RBP`: Base Pointer (Stack Frame Base)
 - `RSP`: Stack Pointer (Top of Stack). **Don't touch it. Stack will break!**
 
+## Programs
+
+### The Anatomy of a Program
+
+A standard assembly program is divided into distinct sections:
+- `section .data`: This section is used for declaring initialized data or constants. It is where you define variables and their initial values.
+- `section .bss`: This section is used for declaring variables that are not initialized. (e.g. a buffer to store user input at runtime)
+- `section .text`: This section contains the actual code (instructions) that the CPU will execute. It is where you write the logic of your program.
+
+### Linux Syscalls
+
+Assembly can't print to the screen or read a file on its own; It has to ask the operating-system (linux) to do it. This is done using **syscalls** (system calls). A syscall is a request to the kernel to perform a specific operation on behalf of the program. Each syscall has a unique number and may require specific arguments.
+
+To make a syscall in `x86-64` assembly, you typically:
+1. Place the syscall number in the `RAX` register.
+2. Place the arguments in the appropriate registers:
+   - `RDI`: 1st argument
+   - `RSI`: 2nd argument
+   - `RDX`: 3rd argument
+3. Execute the `syscall` instruction to hand control to the Linux kernel.
+
 ---
 
 ## 📕 References
