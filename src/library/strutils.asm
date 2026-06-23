@@ -1,3 +1,6 @@
+%ifndef STRUTILS_ASM
+%define STRUTILS_ASM
+
 ; ----------------
 ; STRING UTILITIES
 ; ----------------
@@ -18,3 +21,7 @@ section .text
         jmp .strlen_loop                ; Jump back to the start of the loop for the next byte/character
     .strlen_done:
         ret                             ; Return from the function, with rax containing the length of the string
+
+
+
+%endif; STRUTILS_ASM
