@@ -1,26 +1,9 @@
+; Library
 %include "src/library/strutils.asm"
+%include "src/library/syscalls.asm"
 
-; Syscalls
-SYSCALL_READ    equ 0
-SYSCALL_WRITE   equ 1
-SYSCALL_EXIT    equ 60
-
-; File Descriptors
-STDIN           equ 0
-STDOUT          equ 1
-STDERR          equ 2
-
-; Exit Status Codes
-EXIT_SUCCESS    equ 0
-EXIT_FAILURE    equ 1
-
-%macro PRINT 1
-    mov rax, SYSCALL_WRITE          ; syscall: write
-    mov rdi, STDOUT                 ; file descriptor: stdout
-    mov rsi, %1                     ; buffer: pointer to the message
-    mov rdx, %1_len                 ; count: length of the message
-    syscall                         ; execute syscall
-%endmacro
+; MACROS
+; ------
 
 %macro FAIL 1         
     PRINT msg_fail                  ; Print "FAIL: "
@@ -28,12 +11,6 @@ EXIT_FAILURE    equ 1
     ; PRINT %2                        ; Print the expected value
     ; PRINT %3                        ; Print the actual value
     EXIT EXIT_FAILURE               ; Exit with failure status
-%endmacro
-
-%macro EXIT 1
-    mov rax, SYSCALL_EXIT           ; syscall: exit
-    mov rdi, %1                     ; status: exit code
-    syscall                         ; execute
 %endmacro
 
 ; INITIALIZED DATA
@@ -56,6 +33,7 @@ section .text
 global _start
 
 _start:
+
     ; ----------
     ; TEST CASES
     ; ----------
@@ -72,6 +50,7 @@ _start:
     ; ------- ALL TESTS PASSED -------
 
     EXIT EXIT_SUCCESS
+
 
 ; TEST FAILURES
 ; -------------
