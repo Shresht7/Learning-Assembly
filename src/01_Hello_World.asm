@@ -2,19 +2,19 @@
 
 ; Constants
 section .data
-    msg db 'Hello World!', 0xA  ; Define Bytes (db) msg as 'Hello World!'. 0xA is newline
-    len equ $ - msg             ; Calculate length
+    msg db 'Hello World!', 0xA  ; Define Bytes (db) msg as 'Hello World!'. 0xA (10 in decimal) is newline ascii code
+    len equ $ - msg             ; Calculate length of the msg string ($ current address - msg address = number of bytes in msg)
 
 ; Code
 section .text
-    global _start
+    global _start               ; Exposes the _start label to the linker, so it knows where to begin execution
 
 _start:
     ; write(fd, buffer, count)
     mov rax, 1                  ; syscall: write
     mov rdi, 1                  ; file descriptor: 1 for stdout
-    mov rsi, msg                ; buffer: pointer to our string
-    mov rdx, len                ; count: number of bytes
+    mov rsi, msg                ; buffer: pointer to the start of our string
+    mov rdx, len                ; count: number of bytes to write (length of msg)
     syscall                     ; Ask kernel to execute syscall: write
 
     ; exit(status)
