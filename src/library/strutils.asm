@@ -22,6 +22,20 @@ section .text
     .strlen_done:
         ret                             ; Return from the function, with rax containing the length of the string
 
+    ; is_empty(rdi: *str) -> rax: result
+    ; Checks if a null-terminated string is empty.
+    ;
+    ; @param rdi: pointer to the null-terminated string
+    ; @return rax: 1 if the string is empty, 0 otherwise
+    is_empty:
+        cmp byte [rdi], 0               ; Compare the first byte of the string with the null terminator
+        je .is_empty_true                ; If equal, the string is empty, jump to `.is_empty_true`
+        mov rax, 0                      ; Otherwise, set rax to 0 (false)
+        ret
+    .is_empty_true:
+        mov rax, 1                      ; Set rax to 1 (true)
+        ret
+
     ; strcmp(rdi: *str1, rsi: *str2) -> rax: result
     ; Compares two null-terminated strings.
     ;

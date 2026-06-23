@@ -41,6 +41,13 @@ section .data
     test_strlen db 'strlen should return the length of this string', 0xA, 0
     test_strlen_len equ $ - test_strlen - 1 ; Exclude the null terminator from the length
 
+    test_is_empty_true db 'is_empty should return 1 for an empty string', 0xA, 0
+    test_is_empty_true_len equ $ - test_is_empty_true - 1
+    test_is_empty_false db 'is_empty should return 0 for a non-empty string', 0xA, 0
+    test_is_empty_false_len equ $ - test_is_empty_false - 1
+    test_is_empty_true_str db '', 0
+    test_is_empty_false_str db 'not empty', 0
+
     test_strcmp_equal db 'strcmp should return 0 for equal strings', 0xA, 0
     test_strcmp_equal_len equ $ - test_strcmp_equal - 1 
     test_strcmp_equal_1 db 'these are the same', 0
@@ -86,6 +93,22 @@ _start:
     cmp r10, test_strlen_len        ; Compare the result with the expected length
     TEST strlen
 
+    ; ------- TEST: is_empty -------
+
+    ; Test case 1: Empty string
+    mov rdi, test_is_empty_true_str
+    call is_empty
+    ; rax now contains the result of the check
+    cmp rax, 1                      ; Compare the result with the expected value (1 for empty string)
+    TEST is_empty_true
+
+    ; Test case 2: Non-empty string
+    mov rdi, test_is_empty_false_str
+    call is_empty
+    ; rax now contains the result of the check
+    cmp rax, 0                      ; Compare the result with the expected value (0 for non-empty string)
+    TEST is_empty_false
+
     ; ------- TEST: strcmp -------
 
     ; Test case 1: Equal strings
@@ -124,6 +147,12 @@ _start:
 
 .strlen_failed:
     FAIL test_strlen
+
+.is_empty_true_failed:
+    FAIL test_is_empty_true
+
+.is_empty_false_failed:
+    FAIL test_is_empty_false
 
 .strcmp_equal_failed:
     FAIL test_strcmp_equal
