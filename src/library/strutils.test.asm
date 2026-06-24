@@ -7,6 +7,13 @@ section .data
 
     DEFINE_STR test_str_1, 'Alice', 0
     DEFINE_STR test_str_2, 'Bob', 0
+
+    DEFINE_STR test_itoa_str_1, '12345', 0
+    DEFINE_STR test_itoa_str_2, '-6789', 0
+
+section .bss
+    __test_number_buffer resb 96    ; Reserve 96 bytes for the test number buffer
+
 section .text
 
 global _start
@@ -129,7 +136,24 @@ _start:
         call is_alphanumeric
         ASSERT_EQ rax, 0, "correctly returns 0 for a non-alphanumeric character"
 
-            
+    ; itoa
+    ; ----
+    
+    TESTCASE "itoa should correctly convert integers to strings"
+
+        mov rdi, 12345
+        mov rsi, __test_number_buffer
+        call itoa
+        ASSERT_STR_EQ __test_number_buffer, test_itoa_str_1, "correctly converts a positive integer to string"
+
+    ; atoi
+    ; ----
+
+    TESTCASE "atoi should correctly convert strings to integers"
+
+        mov rdi, test_itoa_str_1
+        call atoi
+        ASSERT_EQ rax, 12345, "correctly converts a positive string to integer"
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
