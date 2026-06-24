@@ -108,7 +108,28 @@ _start:
         call is_lowercase
         ASSERT_EQ rax, 0, "correctly returns 0 for a non-lowercase digit"
 
-        
+    ; is_alphanumeric
+    ; ---------------
+
+    TESTCASE "is_alphanumeric should correctly identify alphanumeric characters"
+
+        mov rdi, 'a'
+        call is_alphanumeric
+        ASSERT_EQ rax, 1, "correctly returns 1 for a lowercase character"
+
+        mov rdi, 'A'
+        call is_alphanumeric
+        ASSERT_EQ rax, 1, "correctly returns 1 for an uppercase character"
+
+        mov rdi, '5'
+        call is_alphanumeric
+        ASSERT_EQ rax, 1, "correctly returns 1 for a digit character"
+
+        mov rdi, '!'
+        call is_alphanumeric
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-alphanumeric character"
+
+            
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
