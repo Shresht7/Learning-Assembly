@@ -28,6 +28,15 @@ EXIT_FAILURE    equ 1
     syscall                         ; execute syscall
 %endmacro
 
+; READ macro to read input from a file
+%macro READ 3
+    mov rax, SYSCALL_READ           ; syscall: read
+    mov rdi, %1                     ; file descriptor: %1 (e.g., STDIN)
+    mov rsi, %2                     ; buffer: pointer to the buffer
+    mov rdx, %3                     ; count: number of bytes to read
+    syscall                         ; execute syscall
+%endmacro
+
 ; PRINT macro to print a message to stdout
 %macro PRINT 1
     mov rax, SYSCALL_WRITE          ; syscall: write
