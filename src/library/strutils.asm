@@ -301,6 +301,10 @@ section .text
             inc rdi                         ; Move to the next character in the string
             jmp .multiply_loop              ; Jump back to the start of the loop for the next character
 
+        .str_to_base_error:
+            xor rax, rax                    ; Clear rax to indicate an error (return 0)
+            ret                             ; Return from the function, with rax containing 0 to indicate an error
+
         .str_to_base_done:
             mov rax, r9                     ; Move the final result into rax for return
             ret                             ; Return from the function, with rax containing the converted integer value
