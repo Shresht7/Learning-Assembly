@@ -208,38 +208,38 @@ section .text
     ; @param rdx: base for conversion (between 2 and 36)
     ; @return none (the result is stored in the buffer pointed to by rsi)
     base_to_str:
-        mov rax, rdi                    ; Move the integer into rax for processing
-        mov rbx, rdx                     ; Move the base into rbx for division
-        mov r8, 0                       ; Initialize a counter for the number of digits
-        lea r10, [charset]                 ; Load the address of the character set into r10
+        mov rax, rdi                        ; Move the integer into rax for processing
+        mov rcx, rdx                        ; Move the base into rcx for division
+        mov r8, 0                           ; Initialize a counter for the number of digits
+        lea r10, [rel charset]              ; Load the address of the character set into r10
 
         .divide_loop:
-            xor rdx, rdx               ; Clear rdx before division (to hold the remainder)
-            div rbx                    ; Divide rax by the base, quotient in rax, remainder in rdx
+            xor rdx, rdx                    ; Clear rdx before division (to hold the remainder)
+            div rcx                         ; Divide rax by the base, quotient in rax, remainder in rdx
 
             ; Lookup the character corresponding to the remainder in the character set
             ; rdx is our remainder, which is the index into the character set
-            movzx r11, byte [r10 + rdx]        ; Get the character corresponding to the remainder from the character set
+            movzx r11, byte [r10 + rdx]     ; Get the character corresponding to the remainder from the character set
 
-            push r11                   ; Push the character onto the stack (we'll have to reverse the order later)
-            inc r8                     ; Increment the digit counter
+            push r11                        ; Push the character onto the stack (we'll have to reverse the order later)
+            inc r8                          ; Increment the digit counter
 
-            cmp rax, 0                   ; Check if the quotient is zero (we've processed all digits)
-            jne .divide_loop             ; If not zero, continue the loop to process the next digit
+            cmp rax, 0                      ; Check if the quotient is zero (we've processed all digits)
+            jne .divide_loop                ; If not zero, continue the loop to process the next digit
 
         ; Now we have all digits on the stack in reverse order, and r8 contains the number of digits
         ; We will now pop the digits from the stack and store them in the buffer pointed to by rsi
         .store_loop:
-            pop r11                    ; Pop the next character from the stack into r11
-            mov [rsi], r11             ; Store the character in the buffer
-            inc rsi                    ; Move to the next position in the buffer
-            dec r8                     ; Decrement the digit counter
-            cmp r8, 0                  ; Check if we have processed all digits
-            jne .store_loop            ; If not, continue storing the next character
+            pop r11                         ; Pop the next character from the stack into r11
+            mov [rsi], r11b                 ; Store the character in the buffer (use 11b to store only the lowest byte)
+            inc rsi                         ; Move to the next position in the buffer
+            dec r8                          ; Decrement the digit counter
+            cmp r8, 0                       ; Check if we have processed all digits
+            jne .store_loop                 ; If not, continue storing the next character
             
         ; Null-terminate the string
-        mov byte [rsi], 0               ; Store the null terminator at the end
-        ret                             ; Return from the function, with the string stored in the buffer pointed to by
+        mov byte [rsi], 0                   ; Store the null terminator at the end
+        ret                                 ; Return from the function, with the string stored in the buffer pointed to by
 
     str_to_base:
         xor r9, r9                          ; Clear r9 to use it as the result accumulator (until rax is free)
