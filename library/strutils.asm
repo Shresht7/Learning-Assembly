@@ -320,4 +320,49 @@ section .text
             pop r12                         ; Restore r12
             ret                             ; Return from the function, with rax containing the converted integer value (or 0 in case of an error)
 
+    ; strcpy(rdi: *dest, rsi: *src) -> rax: pointer to dest
+    ; Copies a null-terminated string from the source to the destination.
+    ;
+    ; @param rdi: pointer to the destination string
+    ; @param rsi: pointer to the source string
+    ; @return rax: pointer to the destination string
+    strcpy:
+        mov rax, rdi                        ; Save the destination pointer in rax for return
+        .copy_loop:
+            mov bl, byte [rsi]              ; Load the current character from the source string
+            mov byte [rdi], bl              ; Store the character in the destination string
+            inc rsi                         ; Move to the next character in the source string
+            inc rdi                         ; Move to the next position in the destination string
+            cmp bl, 0                       ; Check if we reached the null terminator in the source
+            jne .copy_loop                  ; If not, jump back to the start of the loop for the next character
+        mov byte [rdi], 0                  ; Null-terminate the destination string
+        ret                                 ; Return from the function, with rax containing the pointer to the destination string
+        
+    ; strncpy(rdi: *dest, rsi: *src, rdx: n) -> rax: pointer to dest
+    ; Copies up to n characters from the source string to the destination string.
+    ;
+    ; @param rdi: pointer to the destination string
+    ; @param rsi: pointer to the source string
+    ; @param rdx: maximum number of characters to copy
+    ; @return rax: pointer to the destination string
+    strncpy:
+        mov rax, rdi                        ; Save the destination pointer in rax for return
+        xor rcx, rcx                        ; Clear rcx to use it as a counter
+
+        .copy_loop:
+            cmp rcx, rdx                    ; Check if we have copied n characters
+            jge .copy_done                  ; If we have copied n characters, jump to `.copy_done`
+            
+            mov bl, byte [rsi + rcx]        ; Load the current character from the source string
+            mov byte [rdi + rcx], bl        ; Store the character in the destination string
+            inc rcx                         ; Increment the counter
+            cmp bl, 0                       ; Check if we reached the null terminator in the source
+            je .copy_done                   ; If we reached the null terminator, jump to `.copy_done`
+            jmp .copy_loop                  ; Jump back to the start of the loop for the next character
+
+        .copy_done:
+            mov byte [rdi + rcx], 0         ; Null-terminate the destination string
+            ret                             ; Return from the function, with rax containing the pointer to the destination string
+
+
 %endif; STRUTILS_ASM

@@ -14,8 +14,12 @@ section .data
     DEFINE_STR test_base_to_str_1, 'ED', 0
     DEFINE_STR test_base_to_str_2, '100101', 0
 
+    DEFINE_STR test_strncpy_3, 'Ali', 0
+
 section .bss
     __test_number_buffer resb 96    ; Reserve 96 bytes for the test number buffer
+    __test_str_buffer resb 96       ; Reserve 96 bytes for the test string buffer
+
 
 section .text
 
@@ -187,6 +191,26 @@ _start:
         call str_to_base
         ASSERT_EQ rax, 37, "correctly converts binary string to integer"
 
+    ; strcpy
+    ; ------
+
+    TESTCASE "strcpy should correctly copy strings"
+
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_1
+        call strcpy
+        ASSERT_STR_EQ __test_str_buffer, test_str_1, "correctly copies string from source to destination"
+
+    ; strncpy
+    ; -------
+
+    TESTCASE "strncpy should correctly copy strings with a specified length"
+
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_1
+        mov rdx, 3
+        call strncpy
+        ASSERT_STR_EQ rax, test_strncpy_3, "correctly copies first 3 characters of the string" 
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
