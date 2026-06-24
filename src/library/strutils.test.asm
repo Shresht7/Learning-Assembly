@@ -19,9 +19,6 @@ section .text
 global _start
 _start:
 
-    mov r8, 0                      ; Initialize test counter to 0
-    mov r9, 0                      ; Initialize total tests counter to 0
-
     ; strlen
     ; ------
 
