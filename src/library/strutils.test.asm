@@ -155,6 +155,39 @@ _start:
         call atoi
         ASSERT_EQ rax, 12345, "correctly converts a positive string to integer"
 
+    ; base_to_str
+    ; -----------
+
+    TESTCASE "base_to_str should correctly convert integers to strings in different bases"
+
+        mov rdi, 237
+        mov rdx, 16
+        mov rsi, __test_number_buffer
+        call base_to_str
+        ASSERT_STR_EQ rsi, 'ED', "correctly converts integer to hexadecimal string"
+
+        mov rdi, 37
+        mov rdx, 2
+        mov rsi, __test_number_buffer
+        call base_to_str
+        ASSERT_STR_EQ rsi, '100101', "correctly converts integer to binary string"
+
+    ; str_to_base
+    ; -----------
+
+    TESTCASE "str_to_base should correctly convert strings in different bases to integers"
+
+        mov rdi, 'ED'
+        mov rdx, 16
+        call str_to_base
+        ASSERT_EQ rax, 237, "correctly converts hexadecimal string to integer"
+
+        mov rdi, '100101'
+        mov rdx, 2
+        call str_to_base
+        ASSERT_EQ rax, 37, "correctly converts binary string to integer"
+
+
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
     xor rdi, rdi
