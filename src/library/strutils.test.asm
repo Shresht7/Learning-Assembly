@@ -69,6 +69,17 @@ section .data
     test_strcmp_greater_2 db 'Alice', 0
     test_strcmp_greater_2_len equ $ - test_strcmp_greater_2
 
+    test_itoa db 'itoa should convert integer 12345 to string', 0xA, 0
+    test_itoa_len equ $ - test_itoa - 1
+    test_itoa_expected_str db '12345', 0
+    test_itoa_expected_str_len equ $ - test_itoa_expected_str
+
+; UNINITIALIZED DATA
+; ------------------
+
+section .bss
+    number_buffer resb 20                ; Reserve 20 bytes for the integer to string conversion buffer
+
 ; MAIN
 ; ----
 
@@ -137,6 +148,22 @@ _start:
     jl .strcmp_greater_failed
     PASS test_strcmp_greater
 
+    ; ------- TEST: itoa -------
+
+    mov rdi, 12345                  ; The integer to convert
+    mov rsi, number_buffer          ; The buffer to store the resulting string
+    call itoa                       ; Call the itoa function to convert the integer to a string
+    ; rax now contains the pointer to the null-terminated string in number_buffer
+    ; We can now compare the resulting string with the expected string "12345"
+    mov rdi, number_buffer          ; Pointer to the resulting string
+    mov rsi, test_itoa_expected_str ; Pointer to the expected string
+    call strcmp                     ; Compare the two strings
+    cmp rax, 0                      ; Check if the strings are equal
+    TEST itoa
+
+    ; TODO: TEST is a keyword too, rename this
+    ;       Probably a full assertion framework is needed. (e.g. ASSERT_EQ, ASSERT_LE)
+
     ; ------- ALL TESTS PASSED -------
 
     EXIT EXIT_SUCCESS
@@ -162,3 +189,6 @@ _start:
 
 .strcmp_greater_failed:
     FAIL test_strcmp_greater
+
+.itoa_failed:
+    FAIL test_itoa
