@@ -74,6 +74,41 @@ _start:
         call is_digit
         ASSERT_EQ rax, 0, "correctly returns 0 for a non-digit character"
 
+    ; is_uppercase
+    ; ------------
+
+    TESTCASE "is_uppercase should correctly identify uppercase characters"
+
+        mov rdi, 'A'
+        call is_uppercase
+        ASSERT_EQ rax, 1, "correctly returns 1 for an uppercase character"
+
+        mov rdi, 'a'
+        call is_uppercase
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-uppercase character"
+
+        mov rdi, '5'
+        call is_uppercase
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-uppercase digit"
+
+    ; is_lowercase
+    ; ------------
+
+    TESTCASE "is_lowercase should correctly identify lowercase characters"
+
+        mov rdi, 'a'
+        call is_lowercase
+        ASSERT_EQ rax, 1, "correctly returns 1 for a lowercase character"
+
+        mov rdi, 'A'
+        call is_lowercase
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-lowercase character"
+
+        mov rdi, '5'
+        call is_lowercase
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-lowercase digit"
+
+        
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
