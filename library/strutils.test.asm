@@ -242,6 +242,21 @@ _start:
         call strncat
         ASSERT_STR_EQ __test_str_buffer, test_strncat_result, "correctly concatenates first 3 characters of the second string"
 
+    ; strfindchar
+    ; -----------
+
+    TESTCASE "strfindchar should correctly find the first occurrence of a character in a string"
+
+        mov rdi, test_str_1
+        mov rsi, 'i'
+        call strfindchar
+        ASSERT_EQ rax, 2, "correctly finds the first occurrence of 'i' in 'Alice'"
+
+        mov rdi, test_str_1
+        mov rsi, 'z'
+        call strfindchar
+        ASSERT_EQ rax, -1, "correctly returns -1 when character is not found"
+
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
     xor rdi, rdi

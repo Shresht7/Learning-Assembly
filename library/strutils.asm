@@ -421,5 +421,25 @@ section .text
             ret                             ; Return from the function, with rax containing the pointer to the destination string
 
         
+    ; strfindchar(rdi: *str, rsi: char) -> rax: index of first occurrence or -1 if not found
+    ; Searches for the first occurrence of a character in a null-terminated string.
+    ;
+    ; @param rdi: pointer to the null-terminated string
+    ; @param rsi: character to search for
+    ; @return rax: index of the first occurrence of the character, or -1 if not found
+    strfindchar:
+        xor rax, rax                        ; Clear rax to use it as an index counter
+        .search_loop:
+            cmp byte [rdi + rax], 0         ; Check if we reached the null terminator
+            je .not_found                   ; If we reached the null terminator, jump to `.not_found`
+            cmp byte [rdi + rax], sil       ; Compare the current character with the search character (sil is the lower 8 bits of rsi)
+            je .found                       ; If they are equal, jump to `.found`
+            inc rax                         ; Increment the index counter
+            jmp .search_loop                ; Jump back to the start of the loop for the next character
+        .found:
+            ret                             ; Return from the function, with rax containing the index of the first occurrence
+        .not_found:
+            mov rax, -1                     ; Set rax to -1 to indicate that the character was not found
+            ret                             ; Return from the function, with rax containing -1  
 
 %endif; STRUTILS_ASM
