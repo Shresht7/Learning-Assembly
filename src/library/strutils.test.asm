@@ -79,11 +79,25 @@ section .data
     test_atoi_input_str db '67890', 0
     test_atoi_input_str_len equ $ - test_atoi_input_str
 
+    test_base_to_str db 'base_to_str should convert integer 237 to string "ED" in base 16', 0xA, 0
+    test_base_to_str_len equ $ - test_base_to_str - 1
+    test_base_to_str_input_int equ 237
+    test_base_to_str_input_base equ 16
+    test_base_to_str_expected_str db 'ED', 0
+    test_base_to_str_expected_str_len equ $ - test_base_to_str_expected_str
+
+    test_base_to_str_base2_str db 'base_to_str should convert integer 37 to string "100101" in base 2', 0xA, 0
+    test_base_to_str_base2_str_len equ $ - test_base_to_str_base2_str
+    test_base_to_str_input_int_2 equ 37
+    test_base_to_str_input_base_2 equ 2
+    test_base_to_str_expected_str_2 db '100101', 0
+    test_base_to_str_expected_str_2_len equ $ - test_base_to_str_expected_str_2
+
 ; UNINITIALIZED DATA
 ; ------------------
 
 section .bss
-    number_buffer resb 20                ; Reserve 20 bytes for the integer to string conversion buffer
+    number_buffer resb 100                ; Reserve 100 bytes for the integer to string conversion buffer
 
 ; MAIN
 ; ----
@@ -174,6 +188,34 @@ _start:
     cmp rax, 67890                  ; Compare the result with the expected integer value
     TEST atoi
 
+    ; ------- TEST: base_to_str -------
+
+    mov rdi, test_base_to_str_input_int  ; The integer to convert (237)
+    mov rsi, number_buffer               ; The buffer to store the resulting string
+    mov rdx, test_base_to_str_input_base ; The base to convert to (16)
+    call base_to_str                     ; Call the base_to_str function to convert the integer to a string in the specified base
+
+    ; rax now contains the pointer to the null-terminated string in number_buffer
+    ; We can now compare the resulting string with the expected string "ED"
+    mov rdi, number_buffer               ; Pointer to the resulting string
+    mov rsi, test_base_to_str_expected_str ; Pointer to the expected string "ED"
+    call strcmp                          ; Compare the two strings
+    cmp rax, 0                           ; Check if the strings are equal
+    TEST base_to_str
+
+    mov rdi, test_base_to_str_input_int_2  ; The integer to convert (37)
+    mov rsi, number_buffer                 ; The buffer to store the resulting string
+    mov rdx, test_base_to_str_input_base_2 ; The base to convert to (2)
+    call base_to_str                       ; Call the base_to_str function to convert the integer
+
+    ; rax now contains the pointer to the null-terminated string in number_buffer
+    ; We can now compare the resulting string with the expected string "100101"
+    mov rdi, number_buffer                 ; Pointer to the resulting string
+    mov rsi, test_base_to_str_expected_str_2 ; Pointer to the expected string "100101"
+    call strcmp                            ; Compare the two strings
+    cmp rax, 0                             ; Check if the strings are equal
+    TEST base_to_str_base2_str
+
     ; TODO: TEST is a keyword too, rename this
     ;       Probably a full assertion framework is needed. (e.g. ASSERT_EQ, ASSERT_LE)
 
@@ -208,3 +250,9 @@ _start:
 
 .atoi_failed:
     FAIL test_atoi
+
+.base_to_str_failed:
+    FAIL test_base_to_str
+
+.base_to_str_base2_str_failed:
+    FAIL test_base_to_str_base2_str
