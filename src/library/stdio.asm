@@ -2,6 +2,10 @@
 %define STDIO_ASM
 
 %include "src/library/syscalls.asm"
+%include "src/library/strutils.asm"
+
+section .bss
+    __test_num_buffer resb 96
 
 section .text
 
@@ -74,7 +78,21 @@ section .text
         .read_str_done:
         ret                             ; Return from the function, with rax containing the number of bytes read
 
-
+    ; print_int(rdi: int)
+    ; Prints an integer to stdout
+    ;
+    ; @param rdi: integer to print
+    ; @return: nothing
+    print_int:
+        ; Convert integer to string
+        ; rdi already contains the integer to print
+        lea rsi, [rel __test_num_buffer]    ; Arg 2: Pointer to the buffer
+        call itoa
+        
+        ; Print the string
+        lea rdi, [rel __test_num_buffer]    ; Arg 1: Pointer to the buffer
+        call print_str
+        ret
 ; ------
 ; MACROS
 ; ------
