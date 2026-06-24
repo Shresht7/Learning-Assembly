@@ -75,4 +75,21 @@ section .text
         ret                             ; Return from the function, with rax containing the number of bytes read
 
 
+; ------
+; MACROS
+; ------
+
+; PRINT_STR macro to print a null-terminated string to stdout
+%macro PRINT_STR 1
+    mov rdi, %1                     ; Move the pointer to the string into rdi (the parameter for print_str)
+    call print_str                  ; Call the print_str function to print the string
+%endmacro
+
+; READ_STR macro to read a string from stdin into a buffer
+%macro READ_STR 2
+    mov rdi, %1                     ; Move the pointer to the buffer into rdi (the parameter for read_str)
+    mov rsi, %2                     ; Move the size of the buffer into rsi (the parameter for read_str)
+    call read_str                   ; Call the read_str function to read input into the buffer
+%endmacro
+
 %endif; STDIO_ASM
