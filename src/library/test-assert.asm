@@ -80,10 +80,6 @@ section .data
         call print_str                  ; Call the print_str function to print the actual message
         mov rdi, r15                    ; Load the actual value into rdi
         call print_int                  ; Call the print_int function to print the actual value
-
-        ; Final Newline
-        mov rdi, str_newline
-        call print_str
         
         jmp %%done
 
@@ -92,8 +88,6 @@ section .data
         mov rdi, str_pass               ; Load the address of the pass message into rdi
         call print_str
         lea rdi, [rel %%assert_desc]    ; Safely load relative address of the assertion description
-        call print_str
-        mov rdi, str_newline
         call print_str
 
     %%done:
