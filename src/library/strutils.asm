@@ -116,6 +116,27 @@ section .text
         .not_lowercase:
             ret                             ; Return from the function, with rax containing the result (1 for lowercase, 0 for not a lowercase)
 
+    ; is_alphanumeric(rdi: char) -> rax: result
+    ; Checks if a character is alphanumeric (0-9, A-Z, a-z).
+    ;
+    ; @param rdi: character to check
+    ; @return rax: 1 if the character is alphanumeric, 0 otherwise
+    is_alphanumeric:
+        call is_digit                   ; Check if the character is a digit
+        cmp rax, 1                      ; Compare the result with 1 (true)
+        je .is_alphanumeric_true         ; If true, jump to `.is_alphanumeric_true`
+        call is_uppercase               ; Check if the character is an uppercase letter
+        cmp rax, 1                      ; Compare the result with 1 (true)
+        je .is_alphanumeric_true         ; If true, jump to `.is_alphanumeric_true`
+        call is_lowercase               ; Check if the character is a lowercase letter
+        cmp rax, 1                      ; Compare the result with 1 (true)
+        je .is_alphanumeric_true         ; If true, jump to `.is_alphanumeric_true`
+        xor rax, rax                    ; If none of the checks passed, set rax to 0 (false)
+        ret
+        .is_alphanumeric_true:
+            mov rax, 1                      ; Set rax to 1 (true) if the character is alphanumeric
+            ret
+
     ; itoa(rdi: int, rsi: *buffer) -> rax: pointer to the null-terminated string
     ; Converts an integer to a null-terminated string.
     ;

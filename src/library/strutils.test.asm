@@ -99,6 +99,16 @@ section .data
     test_is_not_lower_char db 'M', 0
     test_is_not_lower_char_len equ $ - test_is_not_lower_char
 
+    test_is_alphanumeric db 'is_alphanumeric should return 1 for an alphanumeric character', 0xA, 0
+    test_is_alphanumeric_len equ $ - test_is_alphanumeric - 1
+    test_is_alphanumeric_char db 'Z', 0
+    test_is_alphanumeric_char_len equ $ - test_is_alphanumeric_char
+
+    test_is_not_alphanumeric db 'is_alphanumeric should return 0 for a non-alphanumeric character', 0xA, 0
+    test_is_not_alphanumeric_len equ $ - test_is_not_alphanumeric - 1
+    test_is_not_alphanumeric_char db '!', 0
+    test_is_not_alphanumeric_char_len equ $ - test_is_not_alphanumeric_char
+
     test_itoa db 'itoa should convert integer 12345 to string', 0xA, 0
     test_itoa_len equ $ - test_itoa - 1
     test_itoa_expected_str db '12345', 0
@@ -238,6 +248,20 @@ _start:
     ; rax now contains the result of the check
     cmp rax, 0                      ; Compare the result with the expected value (0 for non-lowercase character)
     TEST is_not_lower
+
+    ; ------ TEST: is_alphanumeric -------
+
+    mov rdi, test_is_alphanumeric_char
+    call is_alphanumeric
+    ; rax now contains the result of the check
+    cmp rax, 1                      ; Compare the result with the expected value (1 for alphanumeric character)
+    TEST is_alphanumeric
+
+    mov rdi, test_is_not_alphanumeric_char
+    call is_alphanumeric
+    ; rax now contains the result of the check
+    cmp rax, 0                      ; Compare the result with the expected value (0 for non-alphanumeric character)
+    TEST is_not_alphanumeric
 
     ; ------- TEST: itoa -------
 
