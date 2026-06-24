@@ -62,4 +62,11 @@ EXIT_FAILURE    equ 1
     syscall                         ; execute
 %endmacro
 
+; DEFINE_STR macro to define a string in the data section
+%macro DEFINE_STR 2+
+    %1: db %2
+    %1_len: equ $ - %1
+%endmacro
+
+
 %endif; SYSCALLS_ASM
