@@ -177,13 +177,13 @@ _start:
 
     TESTCASE "str_to_base should correctly convert strings in different bases to integers"
 
-        mov rdi, test_base_to_str_1
-        mov rdx, 16
+        lea rdi, [rel test_base_to_str_1]
+        mov rsi, 16
         call str_to_base
         ASSERT_EQ rax, 237, "correctly converts hexadecimal string to integer"
 
-        mov rdi, test_base_to_str_2
-        mov rdx, 2
+        lea rdi, [rel test_base_to_str_2]
+        mov rsi, 2
         call str_to_base
         ASSERT_EQ rax, 37, "correctly converts binary string to integer"
 
