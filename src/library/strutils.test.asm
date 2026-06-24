@@ -5,6 +5,8 @@ section .data
     DEFINE_STR test_strlen_str, 'this is a test string', 0
     DEFINE_STR empty_str, '', 0
 
+    DEFINE_STR test_str_1, 'Alice', 0
+    DEFINE_STR test_str_2, 'Bob', 0
 section .text
 
 global _start
@@ -17,11 +19,11 @@ _start:
     ; ------
 
     TESTCASE "strlen should return the correct length of a string"
+
         mov rdi, test_strlen_str            
         call strlen                          
         ASSERT_EQ rax, test_strlen_str_len - 1, "correctly calculates the length of a string"
 
-    TESTCASE "strlen should return 0 for an empty string"
         mov rdi, empty_str
         call strlen                         
         ASSERT_EQ rax, 0, "correctly returns 0 for an empty string"
@@ -29,16 +31,35 @@ _start:
     ; is_empty
     ; --------
 
-    TESTCASE "is_empty should return 1 for an empty string"
+    TESTCASE "is_empty should correctly identify an empty string"
+
         mov rdi, empty_str
         call is_empty                         
         ASSERT_EQ rax, 1, "correctly returns 1 for an empty string"
 
-    TESTCASE "is_empty should return 0 for a non-empty string"
         mov rdi, test_strlen_str
         call is_empty                         
         ASSERT_EQ rax, 0, "correctly returns 0 for a non-empty string"
 
+    ; strcmp
+    ; ------
+
+    TESTCASE "strcmp should correctly compare two strings"
+
+        mov rdi, test_str_1
+        mov rsi, test_str_1
+        call strcmp
+        ASSERT_EQ rax, 0, "correctly returns 0 for equal strings"
+
+        mov rdi, test_str_1
+        mov rsi, test_str_2
+        call strcmp
+        ASSERT_EQ rax, -1, "correctly returns -1 for str1 < str2"
+
+        mov rdi, test_str_2
+        mov rsi, test_str_1
+        call strcmp
+        ASSERT_EQ rax, 1, "correctly returns 1 for str1 > str2"
 
 
     ; All tests passed, exit with status 0
