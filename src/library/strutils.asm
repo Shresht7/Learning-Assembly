@@ -93,7 +93,7 @@ section .text
 
         ; Now we have all digits on the stack in reverse order, and r8 contains the number of digits
         ; We will now pop the digits from the stack and store them in the buffer pointed to by rsi
-        
+
         .store_loop:
             pop rdx                     ; Pop the next digit from the stack into rdx
             mov [rsi], dl               ; Store the ASCII character in the buffer
@@ -105,5 +105,28 @@ section .text
         ; Null-terminate the string
         mov byte [rsi], 0               ; Store the null terminator at the end
         ret                             ; Return from the function, with the string stored in the buffer pointed to by rsi
+
+    ; atoi(rdi: *str) -> rax: int
+    ; Converts a null-terminated string to an integer.
+    ;
+    ; @param rdi: pointer to the null-terminated string
+    ; @return rax: the converted integer value
+    atoi:
+        xor rax, rax                    ; Clear rax to use it as the result accumulator
+
+        xor rbx, rbx                    ; Clear rbx to use it as a temporary variable for the current digit
+        .atoi_loop:
+            mov bl, byte [rdi]              ; Load the current byte of the string into
+            cmp bl, 0                       ; Check if we reached the null terminator
+            je .atoi_done                   ; If we reached the null terminator, jump to the `.atoi_done` label
+
+            sub bl, '0'                     ; Convert the ASCII character to its integer value by subtracting '0'
+            imul rax, rax, 10               ; Multiply the current result by 10 to shift left for the next digit
+            add rax, rbx                    ; Add the current digit to the result
+            
+            inc rdi                         ; Move to the next byte in the string
+            jmp .atoi_loop                  ; Jump back to the start of the loop for the next character
+        .atoi_done:
+            ret                             ; Return from the function, with rax containing the converted integer value
 
 %endif; STRUTILS_ASM

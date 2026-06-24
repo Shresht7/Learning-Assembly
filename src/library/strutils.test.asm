@@ -74,6 +74,11 @@ section .data
     test_itoa_expected_str db '12345', 0
     test_itoa_expected_str_len equ $ - test_itoa_expected_str
 
+    test_atoi db 'atoi should convert string "67890" to integer 67890', 0xA, 0
+    test_atoi_len equ $ - test_atoi - 1
+    test_atoi_input_str db '67890', 0
+    test_atoi_input_str_len equ $ - test_atoi_input_str
+
 ; UNINITIALIZED DATA
 ; ------------------
 
@@ -161,6 +166,14 @@ _start:
     cmp rax, 0                      ; Check if the strings are equal
     TEST itoa
 
+    ; ------- TEST: atoi -------
+
+    mov rdi, test_atoi_input_str    ; Pointer to the input string "67890"
+    call atoi                       ; Call the atoi function to convert the string to an integer
+    ; rax now contains the integer value 67890
+    cmp rax, 67890                  ; Compare the result with the expected integer value
+    TEST atoi
+
     ; TODO: TEST is a keyword too, rename this
     ;       Probably a full assertion framework is needed. (e.g. ASSERT_EQ, ASSERT_LE)
 
@@ -192,3 +205,6 @@ _start:
 
 .itoa_failed:
     FAIL test_itoa
+
+.atoi_failed:
+    FAIL test_atoi
