@@ -442,4 +442,30 @@ section .text
             mov rax, -1                     ; Set rax to -1 to indicate that the character was not found
             ret                             ; Return from the function, with rax containing -1  
 
+    ; strstartswith(rdi: *str, rsi: *prefix) -> rax: 1 if str starts with prefix, 0 otherwise
+    ; Checks if a null-terminated string starts with a given prefix.
+    ;
+    ; @param rdi: pointer to the null-terminated string
+    ; @param rsi: pointer to the null-terminated prefix string
+    ; @return rax: 1 if the string starts with the prefix, 0 otherwise
+    strstartswith:
+        .check_loop:
+            mov al, byte [rdi]              ; Load the current character from the string
+            mov bl, byte [rsi]              ; Load the current character from the prefix
+            cmp bl, 0                       ; Check if we reached the null terminator of the prefix
+            je .prefix_matched              ; If we reached the null terminator of the prefix, the prefix is matched, jump to `.prefix_matched`
+            cmp al, 0                       ; Check if we reached the null terminator of the string
+            je .prefix_not_matched          ; If we reached the null terminator of the string before the prefix, the prefix is not matched, jump to `.prefix_not_matched`
+            cmp al, bl                      ; Compare the current characters of the string and the prefix
+            jne .prefix_not_matched         ; If they are not equal, the prefix is not matched, jump to `.prefix_not_matched`
+            inc rdi                         ; Move to the next character in the string
+            inc rsi                         ; Move to the next character in the prefix
+            jmp .check_loop                 ; Jump back to the start of the loop for the next character comparison
+        .prefix_matched:
+            mov rax, 1                      ; Set rax to 1 to indicate that the string starts with the prefix
+            ret                             ; Return from the function, with rax containing 1
+        .prefix_not_matched:
+            xor rax, rax                    ; Clear rax to indicate that the string does not start with the prefix
+            ret                             ; Return from the function, with rax containing 0
+
 %endif; STRUTILS_ASM

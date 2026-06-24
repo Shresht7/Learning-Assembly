@@ -257,6 +257,21 @@ _start:
         call strfindchar
         ASSERT_EQ rax, -1, "correctly returns -1 when character is not found"
 
+    ; strstartswith
+    ; -------------
+
+    TESTCASE "strstartswith should correctly identify if a string starts with a given prefix"
+
+        mov rdi, test_str_1
+        mov rsi, test_strncpy_3
+        call strstartswith
+        ASSERT_EQ rax, 1, "correctly identifies that 'Alice' starts with 'Ali'"
+
+        mov rdi, test_str_1
+        mov rsi, test_str_2
+        call strstartswith
+        ASSERT_EQ rax, 0, "correctly identifies that 'Alice' does not start with 'Bob'"
+
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
     xor rdi, rdi
