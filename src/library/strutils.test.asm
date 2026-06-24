@@ -61,6 +61,19 @@ _start:
         call strcmp
         ASSERT_EQ rax, 1, "correctly returns 1 for str1 > str2"
 
+    ; is_digit
+    ; --------
+
+    TESTCASE "is_digit should correctly identify digit characters"
+
+        mov rdi, '5'
+        call is_digit
+        ASSERT_EQ rax, 1, "correctly returns 1 for a digit character"
+
+        mov rdi, 'a'
+        call is_digit
+        ASSERT_EQ rax, 0, "correctly returns 0 for a non-digit character"
+
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT
