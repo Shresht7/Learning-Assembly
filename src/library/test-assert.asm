@@ -190,4 +190,19 @@ section .data
     _ASSERT_BASE %1, 0, %2, je              ; Passes if false (je)
 %endmacro
 
+; ASSERT_STR_EQ
+; -------------
+
+; ASSERT_STR_EQ <str1>, <str2>, <description>
+;
+; Asserts that the two strings are equal. If they are not equal,
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_STR_EQ 3
+    ; Call strcmp to compare the two strings
+    mov rdi, %1                            ; Load the address of the first string into rdi
+    mov rsi, %2                            ; Load the address of the second string into rsi
+    call strcmp                            ; Call strcmp to compare the two strings
+    _ASSERT_BASE rax, 0, %3, je            ; Passes if equal (rax == 0)
+%endmacro
+
 %endif; TEST_ASSERT_ASM
