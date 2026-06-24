@@ -133,6 +133,13 @@ section .data
     test_base_to_str_expected_str_2 db '100101', 0
     test_base_to_str_expected_str_2_len equ $ - test_base_to_str_expected_str_2
 
+    test_str_to_base db 'str_to_base should convert string "1A" in base 16 to integer 26', 0xA, 0
+    test_str_to_base_len equ $ - test_str_to_base - 1
+    test_str_to_base_input_str db '1A', 0
+    test_str_to_base_input_str_len equ $ - test_str_to_base_input_str
+    test_str_to_base_input_base equ 16
+    test_str_to_base_expected_int equ 26
+
 ; UNINITIALIZED DATA
 ; ------------------
 
@@ -311,6 +318,15 @@ _start:
     call strcmp                            ; Compare the two strings
     cmp rax, 0                             ; Check if the strings are equal
     TEST base_to_str_base2_str
+
+    ; ------- TEST: str_to_base -------
+
+    mov rdi, test_str_to_base_input_str    ; Pointer to the input string "1A"
+    mov rsi, test_str_to_base_input_base   ; The base to convert from (16)
+    call str_to_base                       ; Call the str_to_base function to convert the string to an integer
+    ; rax now contains the integer value 26
+    cmp rax, test_str_to_base_expected_int  ; Compare the result with the expected integer value (26)
+    TEST str_to_base
 
     ; TODO: TEST is a keyword too, rename this
     ;       Probably a full assertion framework is needed. (e.g. ASSERT_EQ, ASSERT_LE)

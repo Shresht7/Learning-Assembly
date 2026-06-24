@@ -241,5 +241,68 @@ section .text
         mov byte [rsi], 0               ; Store the null terminator at the end
         ret                             ; Return from the function, with the string stored in the buffer pointed to by
 
+    str_to_base:
+        xor r9, r9                          ; Clear r9 to use it as the result accumulator (until rax is free)
+        mov rcx, rsi                        ; rcx holds the base for multiplication
+
+        .multiply_loop:
+            movzx r8, byte [rdi]            ; Safely load 1 byte into r8 from the string (rdi points to the current character in the string)
+            cmp r8, 0                       ; Check if we reached the null terminator
+            je .str_to_base_done            ; If we reached the null terminator, jump to the `.str_to_base_done` label
+
+            ; Check if it is alphanumeric
+            push rdi                        ; Save rdi on the stack to preserve the pointer to the string 
+            mov rdi, r8                     ; Move the character to rdi for the is_alphanumeric check
+            call is_alphanumeric            ; Call the is_alphanumeric function to check if the character is alphanumeric
+            pop rdi                         ; Restore rdi from the stack
+            cmp rax, 1                      ; Check the result of is_alphanumeric (rax will be 1 if the character is alphanumeric, 0 otherwise)
+            jne .str_to_base_error          ; If not alphanumeric, jump to the `.str_to_base_error` label
+
+            ; Check if it is a digit
+            push rdi                        ; Save rdi on the stack to preserve the pointer to the string
+            mov rdi, r8                     ; Move the character to rdi for the is_digit check
+            call is_digit                   ; Call the is_digit function to check if the character is a digit
+            pop rdi                         ; Restore rdi from the stack
+            cmp rax, 1                      ; Check the result of is_digit (rax will be 1 if the character is a digit, 0 otherwise)
+            je .str_to_base_digit           ; If not a digit, check if it is an uppercase letter
+
+            ; Check if it is an uppercase letter
+            push rdi                        ; Save rdi on the stack to preserve the pointer to the string
+            mov rdi, r8                     ; Move the character to rdi for the is_uppercase check
+            call is_uppercase               ; Call the is_uppercase function to check if the character is an uppercase letter
+            pop rdi                         ; Restore rdi from the stack
+            cmp rax, 1                      ; Check the result of is_uppercase (rax will be 1 if the character is an uppercase letter, 0 otherwise)
+            je .str_to_base_uppercase       ; If not an uppercase letter, check if it is a lowercase letter
+
+            ; If it is valid, and not a digit or uppercase letter, it must be a lowercase letter
+            jmp .str_to_base_lowercase
+
+            .str_to_base_digit:
+            sub r8, '0'                     ; Convert the ASCII character to its integer value by subtracting '0'
+            jmp .str_to_base_process
+
+            .str_to_base_uppercase:
+            sub r8, 'A'                     ; Convert the ASCII character to its integer value by subtracting 'A' (A-Z to 0-25)
+            add r8, 10                      ; Adjust the value to account for the digits (0-9) that come before the letters in the base representation
+            jmp .str_to_base_process
+
+            .str_to_base_lowercase:
+            sub r8, 'a'                     ; Convert the ASCII character to its integer value by subtracting 'a' (a-z to 0-25)
+            add r8, 10                      ; Adjust the value to account for the digits (0-9) that come before the letters in the base representation
+            jmp .str_to_base_process
+
+            .str_to_base_process:
+            cmp r8, rcx                     ; Is the translated digit >= base?
+            jge .str_to_base_error          ; If so, jump to the `.str_to_base_error` label
+
+            imul r9, rcx                    ; Multiply the current result by the base
+            add r9, r8                      ; Add the current digit to the result
+            
+            inc rdi                         ; Move to the next character in the string
+            jmp .multiply_loop              ; Jump back to the start of the loop for the next character
+
+        .str_to_base_done:
+            mov rax, r9                     ; Move the final result into rax for return
+            ret                             ; Return from the function, with rax containing the converted integer value
 
 %endif; STRUTILS_ASM
