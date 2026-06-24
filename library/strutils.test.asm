@@ -11,6 +11,9 @@ section .data
     DEFINE_STR test_itoa_str_1, '12345', 0
     DEFINE_STR test_itoa_str_2, '-6789', 0
 
+    DEFINE_STR test_base_to_str_1, 'ED', 0
+    DEFINE_STR test_base_to_str_2, '100101', 0
+
 section .bss
     __test_number_buffer resb 96    ; Reserve 96 bytes for the test number buffer
 
@@ -161,25 +164,25 @@ _start:
         mov rdx, 16
         mov rsi, __test_number_buffer
         call base_to_str
-        ASSERT_STR_EQ rsi, 'ED', "correctly converts integer to hexadecimal string"
+        ASSERT_STR_EQ __test_number_buffer, test_base_to_str_1, "correctly converts integer to hexadecimal string"
 
         mov rdi, 37
         mov rdx, 2
         mov rsi, __test_number_buffer
         call base_to_str
-        ASSERT_STR_EQ rsi, '100101', "correctly converts integer to binary string"
+        ASSERT_STR_EQ __test_number_buffer, test_base_to_str_2, "correctly converts integer to binary string"
 
     ; str_to_base
     ; -----------
 
     TESTCASE "str_to_base should correctly convert strings in different bases to integers"
 
-        mov rdi, 'ED'
+        mov rdi, test_base_to_str_1
         mov rdx, 16
         call str_to_base
         ASSERT_EQ rax, 237, "correctly converts hexadecimal string to integer"
 
-        mov rdi, '100101'
+        mov rdi, test_base_to_str_2
         mov rdx, 2
         call str_to_base
         ASSERT_EQ rax, 37, "correctly converts binary string to integer"
