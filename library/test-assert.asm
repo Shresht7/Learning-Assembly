@@ -1,7 +1,7 @@
 %ifndef TEST_ASSERT_ASM
 %define TEST_ASSERT_ASM
 
-%include "src/library/stdio.asm"
+%include "library/stdio.asm"
 
 section .data
     str_tc_prefix   db 10, "TESTCASE: ", 0

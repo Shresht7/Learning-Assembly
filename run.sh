@@ -2,7 +2,7 @@
 
 # Compile, link and run a ASM file
 
-LIB="src/library/"
+LIB="library/"
 OBJ="obj/"
 OUT="out/"
 

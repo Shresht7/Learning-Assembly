@@ -1,8 +1,8 @@
 %ifndef STDIO_ASM
 %define STDIO_ASM
 
-%include "src/library/syscalls.asm"
-%include "src/library/strutils.asm"
+%include "library/syscalls.asm"
+%include "library/strutils.asm"
 
 section .bss
     __test_num_buffer resb 96

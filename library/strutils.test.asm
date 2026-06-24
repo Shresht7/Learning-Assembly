@@ -1,5 +1,5 @@
-%include "src/library/strutils.asm"
-%include "src/library/test-assert.asm"
+%include "library/strutils.asm"
+%include "library/test-assert.asm"
 
 section .data
     DEFINE_STR test_strlen_str, 'this is a test string', 0

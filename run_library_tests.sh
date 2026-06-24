@@ -2,7 +2,7 @@
 
 # Compile and run the tests for the library
 
-LIB="src/library/"
+LIB="library/"
 OBJ="obj/"
 OUT="out/"
 

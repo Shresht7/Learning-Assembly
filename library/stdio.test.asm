@@ -1,5 +1,5 @@
-%include "src/library/stdio.asm"
-%include "src/library/strutils.asm"
+%include "library/stdio.asm"
+%include "library/strutils.asm"
 
 section .data
 
