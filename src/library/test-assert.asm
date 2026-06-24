@@ -40,17 +40,13 @@ section .data
     pop rax
 %endmacro
 
-; ASSERT_EQ
-; ---------
+; ASSERTIONS
+; ----------
 
-; ASSERT_EQ <actual>, <expected>, <description>
-;
-; Asserts that the expected value is equal to the actual value. If they are not equal
-; it prints a failure message with the expected and actual values, along with a description.
-%macro ASSERT_EQ 3
+%macro _ASSERT_BASE 4
+    ; Define a description for the assertion in the data section
     [section .data]
         %%assert_desc: db %3, 0
-
     __?SECT?__
 
     ; Preserve Registers
@@ -60,12 +56,11 @@ section .data
     push r15
 
     ; Move expected (%1) and actual (%2) into registers for comparison
-    mov r14, %1                      ; Move expected value into r14
-    mov r15, %2                      ; Move actual value into r15
+    mov r14, %1                         ; Move expected value into r14
+    mov r15, %2                         ; Move actual value into r15
 
-    ; Compare expected and actual values
-    cmp r14, r15                      ; Compare the actual value (r15) with the expected value (r14)
-    je %%passed
+    cmp r14, r15                        ; Compare expected and actual values
+    %4 %%passed                         ; Use the provided jump instruction as the success case
 
     %%failed:
         ; Print [FAIL]: <assertion_description>
@@ -111,6 +106,72 @@ section .data
         pop r14
         pop rdi
         pop rax
+%endmacro
+
+; ASSERT_EQ
+; ---------
+
+; ASSERT_EQ <actual>, <expected>, <description>
+;
+; Asserts that the expected value is equal to the actual value. If they are not equal
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_EQ 3
+    _ASSERT_BASE %2, %1, %3, je         ; Passes if equal (je)
+%endmacro
+
+; ASSERT_NE
+; ---------
+
+; ASSERT_NE <actual>, <expected>, <description>
+;
+; Asserts that the expected value is not equal to the actual value. If they are equal
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_NE 3
+    _ASSERT_BASE %2, %1, %3, jne        ; Passes if not equal (jne)
+%endmacro
+
+; ASSERT_LT
+; ---------
+
+; ASSERT_LT <actual>, <expected>, <description>
+;
+; Asserts that the expected value is less than the actual value. If it is not less than
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_LT 3
+    _ASSERT_BASE %2, %1, %3, jl         ; Passes if less than (jl)
+%endmacro
+
+; ASSERT_LE
+; ---------
+
+; ASSERT_LE <actual>, <expected>, <description>
+;
+; Asserts that the expected value is less than or equal to the actual value.
+; If it is not less than or equal to, it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_LE 3
+    _ASSERT_BASE %2, %1, %3, jle        ; Passes if less than or equal to (jle)
+%endmacro
+
+; ASSERT_GT
+; ---------
+
+; ASSERT_GT <actual>, <expected>, <description>
+;
+; Asserts that the expected value is greater than the actual value. If it is not greater than
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_GT 3
+    _ASSERT_BASE %2, %1, %3, jg         ; Passes if greater than (jg)
+%endmacro
+
+; ASSERT_GE
+; ---------
+
+; ASSERT_GE <actual>, <expected>, <description>
+;
+; Asserts that the expected value is greater than or equal to the actual value.
+; If it is not greater than or equal to, it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_GE 3
+    _ASSERT_BASE %2, %1, %3, jge        ; Passes if greater than or equal to (jge)
 %endmacro
 
 %endif; TEST_ASSERT_ASM
