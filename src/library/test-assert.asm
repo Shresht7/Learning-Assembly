@@ -168,4 +168,26 @@ section .data
     _ASSERT_BASE %2, %1, %3, jge            ; Passes if greater than or equal to (jge)
 %endmacro
 
+; ASSERT_TRUE
+; -----------
+
+; ASSERT_TRUE <condition>, <description>
+;
+; Asserts that the condition is true (non-zero). If it is false (zero),
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_TRUE 2
+    _ASSERT_BASE %1, 1, %2, je              ; Passes if true (je)
+%endmacro
+
+; ASSERT_FALSE
+; ------------
+
+; ASSERT_FALSE <condition>, <description>
+;
+; Asserts that the condition is false (zero). If it is true (non-zero),
+; it prints a failure message with the expected and actual values, along with a description.
+%macro ASSERT_FALSE 2
+    _ASSERT_BASE %1, 0, %2, je              ; Passes if false (je)
+%endmacro
+
 %endif; TEST_ASSERT_ASM
