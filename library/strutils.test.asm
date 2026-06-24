@@ -16,6 +16,9 @@ section .data
 
     DEFINE_STR test_strncpy_3, 'Ali', 0
 
+    DEFINE_STR test_strcat_result, 'AliceBob', 0
+    DEFINE_STR test_strncat_result, 'BobAli', 0
+
 section .bss
     __test_number_buffer resb 96    ; Reserve 96 bytes for the test number buffer
     __test_str_buffer resb 96       ; Reserve 96 bytes for the test string buffer
@@ -211,6 +214,33 @@ _start:
         mov rdx, 3
         call strncpy
         ASSERT_STR_EQ rax, test_strncpy_3, "correctly copies first 3 characters of the string" 
+
+    ; strcat
+    ; ------
+
+    TESTCASE "strcat should correctly concatenate strings"
+
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_1
+        call strcpy
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_2
+        call strcat
+        ASSERT_STR_EQ __test_str_buffer, test_strcat_result, "correctly concatenates two strings"
+
+    ; strncat
+    ; -------
+
+    TESTCASE "strncat should correctly concatenate strings with a specified length"
+
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_2
+        call strcpy
+        mov rdi, __test_str_buffer
+        mov rsi, test_str_1
+        mov rdx, 3
+        call strncat
+        ASSERT_STR_EQ __test_str_buffer, test_strncat_result, "correctly concatenates first 3 characters of the second string"
 
     ; All tests passed, exit with status 0
     mov rax, SYSCALL_EXIT

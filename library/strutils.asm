@@ -364,5 +364,62 @@ section .text
             mov byte [rdi + rcx], 0         ; Null-terminate the destination string
             ret                             ; Return from the function, with rax containing the pointer to the destination string
 
+    ; strcat(rdi: *dest, rsi: *src) -> rax: pointer to dest
+    ; Concatenates the source string to the end of the destination string.
+    ;
+    ; @param rdi: pointer to the destination string
+    ; @param rsi: pointer to the source string
+    ; @return rax: pointer to the destination string
+    strcat:
+        mov rax, rdi                        ; Save the destination pointer in rax for return
+        ; Find the end of the destination string
+        .find_end:
+            cmp byte [rdi], 0               ; Check if we reached the null terminator
+            je .copy_src                    ; If we reached the null terminator, jump to `.copy_src` to start copying the source string
+            inc rdi                         ; Move to the next character in the destination string
+            jmp .find_end                   ; Jump back to the start of the loop to find the end of the destination string
+
+        .copy_src:
+            mov bl, byte [rsi]              ; Load the current character from the source string
+            mov byte [rdi], bl              ; Store the character in the destination string
+            inc rsi                         ; Move to the next character in the source string
+            inc rdi                         ; Move to the next position in the destination string
+            cmp bl, 0                       ; Check if we reached the null terminator in the source
+            jne .copy_src                   ; If not, jump back to the start of the loop to copy the next character
+            ret                             ; Return from the function, with rax containing the pointer
+
+    ; strncat(rdi: *dest, rsi: *src, rdx: n) -> rax: pointer to dest
+    ; Concatenates up to n characters from the source string to the end of the destination string.
+    ;
+    ; @param rdi: pointer to the destination string
+    ; @param rsi: pointer to the source string
+    ; @param rdx: maximum number of characters to concatenate
+    ; @return rax: pointer to the destination string
+    strncat:
+        mov rax, rdi                        ; Save the destination pointer in rax for return
+        ; Find the end of the destination string
+        .find_end:
+            cmp byte [rdi], 0               ; Check if we reached the null terminator
+            je .copy_src                    ; If we reached the null terminator, jump to `.copy_src` to start copying the source string
+            inc rdi                         ; Move to the next character in the destination string
+            jmp .find_end                   ; Jump back to the start of the loop to find the end of the destination string
+
+        .copy_src:
+            cmp rdx, 0                      ; Check if we have copied n characters
+            je .null_terminate              ; If we have copied n characters, jump to `.null_terminate` to null-terminate the destination string
+            mov bl, byte [rsi]              ; Load the current character from the source string
+            cmp bl, 0                       ; Check if we reached the null terminator in the source
+            je .null_terminate              ; If we reached the null terminator, jump to `.null_terminate` to null-terminate the destination string
+            mov byte [rdi], bl              ; Store the character in the destination string
+            inc rsi                         ; Move to the next character in the source string
+            inc rdi                         ; Move to the next position in the destination string
+            dec rdx                         ; Decrement the counter for the number of characters to concatenate
+            jmp .copy_src                   ; Jump back to the start of the loop to copy the next character
+
+        .null_terminate:
+            mov byte [rdi], 0               ; Null-terminate the destination string
+            ret                             ; Return from the function, with rax containing the pointer to the destination string
+
+        
 
 %endif; STRUTILS_ASM
