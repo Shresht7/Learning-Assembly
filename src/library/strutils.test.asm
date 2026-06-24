@@ -69,6 +69,36 @@ section .data
     test_strcmp_greater_2 db 'Alice', 0
     test_strcmp_greater_2_len equ $ - test_strcmp_greater_2
 
+    test_is_digit db 'is_digit should return 1 for a digit character', 0xA, 0
+    test_is_digit_len equ $ - test_is_digit - 1
+    test_is_digit_char db '5', 0
+    test_is_digit_char_len equ $ - test_is_digit_char
+
+    test_is_not_digit db 'is_digit should return 0 for a non-digit character', 0xA, 0
+    test_is_not_digit_len equ $ - test_is_not_digit - 1
+    test_is_not_digit_char db 'A', 0
+    test_is_not_digit_char_len equ $ - test_is_not_digit_char
+
+    test_is_upper db 'is_uppercase should return 1 for an uppercase character', 0xA, 0
+    test_is_upper_len equ $ - test_is_upper - 1
+    test_is_upper_char db 'G', 0
+    test_is_upper_char_len equ $ - test_is_upper_char
+
+    test_is_not_upper db 'is_uppercase should return 0 for a non-uppercase character', 0xA, 0
+    test_is_not_upper_len equ $ - test_is_not_upper - 1
+    test_is_not_upper_char db 'g', 0
+    test_is_not_upper_char_len equ $ - test_is_not_upper_char
+
+    test_is_lower db 'is_lowercase should return 1 for a lowercase character', 0xA, 0
+    test_is_lower_len equ $ - test_is_lower - 1
+    test_is_lower_char db 'm', 0
+    test_is_lower_char_len equ $ - test_is_lower_char
+
+    test_is_not_lower db 'is_lowercase should return 0 for a non-lowercase character', 0xA, 0
+    test_is_not_lower_len equ $ - test_is_not_lower - 1
+    test_is_not_lower_char db 'M', 0
+    test_is_not_lower_char_len equ $ - test_is_not_lower_char
+
     test_itoa db 'itoa should convert integer 12345 to string', 0xA, 0
     test_itoa_len equ $ - test_itoa - 1
     test_itoa_expected_str db '12345', 0
@@ -167,6 +197,48 @@ _start:
     jl .strcmp_greater_failed
     PASS test_strcmp_greater
 
+    ; ------ TEST: is_digit -------
+
+    mov rdi, test_is_digit_char
+    call is_digit
+    ; rax now contains the result of the check
+    cmp rax, 1                      ; Compare the result with the expected value (1 for digit character)
+    TEST is_digit
+
+    mov rdi, test_is_not_digit_char
+    call is_digit
+    ; rax now contains the result of the check
+    cmp rax, 0                      ; Compare the result with the expected value (0 for non-digit character)
+    TEST is_not_digit
+
+    ; ------ TEST: is_uppercase -------
+
+    mov rdi, test_is_upper_char
+    call is_uppercase
+    ; rax now contains the result of the check
+    cmp rax, 1                      ; Compare the result with the expected value (1 for uppercase character)
+    TEST is_upper
+
+    mov rdi, test_is_not_upper_char
+    call is_uppercase
+    ; rax now contains the result of the check
+    cmp rax, 0                      ; Compare the result with the expected value (0 for non-uppercase character)
+    TEST is_not_upper
+
+    ; ------ TEST: is_lowercase -------
+
+    mov rdi, test_is_lower_char
+    call is_lowercase
+    ; rax now contains the result of the check
+    cmp rax, 1                      ; Compare the result with the expected value (1 for lowercase character)
+    TEST is_lower
+
+    mov rdi, test_is_not_lower_char
+    call is_lowercase
+    ; rax now contains the result of the check
+    cmp rax, 0                      ; Compare the result with the expected value (0 for non-lowercase character)
+    TEST is_not_lower
+
     ; ------- TEST: itoa -------
 
     mov rdi, 12345                  ; The integer to convert
@@ -244,6 +316,24 @@ _start:
 
 .strcmp_greater_failed:
     FAIL test_strcmp_greater
+
+.is_digit_failed:
+    FAIL test_is_digit
+
+.is_not_digit_failed:
+    FAIL test_is_not_digit
+
+.is_upper_failed:
+    FAIL test_is_upper
+
+.is_not_upper_failed:
+    FAIL test_is_not_upper
+
+.is_lower_failed:
+    FAIL test_is_lower
+
+.is_not_lower_failed:
+    FAIL test_is_not_lower
 
 .itoa_failed:
     FAIL test_itoa

@@ -68,6 +68,53 @@ section .text
             xor rax, rax                    ; Set rax to 0 to indicate str1 == str2
             ret                             
 
+    ; is_digit(rdi: char) -> rax: result
+    ; Checks if a character is a digit (0-9).
+    ;
+    ; @param rdi: character to check
+    ; @return rax: 1 if the character is a digit, 0 otherwise
+    is_digit:
+        xor rax, rax                    ; Assume false (not a digit)
+        cmp rdi, '0'                     ; Compare the character with '0'
+        jl .not_digit                    ; If less than '0', it's not a digit
+        cmp rdi, '9'                     ; Compare the character with '9'
+        jg .not_digit                    ; If greater than '9', it's not a digit
+        mov rax, 1                      ; If we reach here, it's a digit, set rax to 1 (true)
+        ret
+        .not_digit:
+            ret                          ; Return from the function, with rax containing the result (1 for digit, 0 for not a digit)
+
+    ; is_uppercase(rdi: char) -> rax: result
+    ; Checks if a character is an uppercase letter (A-Z).
+    ;
+    ; @param rdi: character to check
+    ; @return rax: 1 if the character is an uppercase letter, 0 otherwise
+    is_uppercase:
+        xor rax, rax                    ; Assume false (not an uppercase letter)
+        cmp rdi, 'A'                     ; Compare the character with 'A'
+        jl .not_uppercase                ; If less than 'A', it's not an uppercase letter
+        cmp rdi, 'Z'                     ; Compare the character with 'Z'
+        jg .not_uppercase                ; If greater than 'Z', it's not an uppercase letter
+        mov rax, 1                      ; If we reach here, it's an uppercase letter, set rax to 1 (true)
+        ret
+        .not_uppercase:
+            ret                             ; Return from the function, with rax containing the result (1 for uppercase, 0 for not an uppercase)
+
+    ; is_lowercase(rdi: char) -> rax: result
+    ; Checks if a character is a lowercase letter (a-z).
+    ;
+    ; @param rdi: character to check
+    ; @return rax: 1 if the character is a lowercase letter, 0 otherwise
+    is_lowercase:
+        xor rax, rax                    ; Assume false (not a lowercase letter)
+        cmp rdi, 'a'                     ; Compare the character with 'a'
+        jl .not_lowercase                ; If less than 'a', it's not a lowercase letter
+        cmp rdi, 'z'                     ; Compare the character with 'z'
+        jg .not_lowercase                ; If greater than 'z', it's not a lowercase letter
+        mov rax, 1                      ; If we reach here, it's a lowercase letter, set rax to 1 (true)
+        ret
+        .not_lowercase:
+            ret                             ; Return from the function, with rax containing the result (1 for lowercase, 0 for not a lowercase)
 
     ; itoa(rdi: int, rsi: *buffer) -> rax: pointer to the null-terminated string
     ; Converts an integer to a null-terminated string.
