@@ -4,8 +4,10 @@
 %include "src/library/syscalls.asm"
 
 section .text
+
+
     ; print_str(rdi: *str)
-    ; Prints a null-terminated string to stdout.
+    ; Prints a null-terminated string to stdout
     ;
     ; @param rdi: pointer to the null-terminated string
     ; @return: nothing
@@ -19,12 +21,16 @@ section .text
 
         mov rax, SYSCALL_WRITE          ; Set rax to the syscall number for write
         mov rdi, STDOUT                 ; Set rdi to the file descriptor for stdout
+        ; rsi                           ; rsi already contains the pointer to the string
+        ; rdx                           ; rdx already contains the length of the string
         syscall                         ; Execute the write syscall to print the string to stdout
 
         ret
 
+
+
     ; read_str(rdi: *buffer, rsi: buffer_size) -> rax: bytes_read
-    ; Reads a string from stdin into a buffer.
+    ; Reads a string from stdin into a buffer
     ;
     ; @param rdi: pointer to the buffer where the string will be stored
     ; @param rsi: size of the buffer (maximum number of bytes to read)
@@ -39,32 +45,33 @@ section .text
         ; Linux will pause the program until the user presses Enter, and then it will return the number of bytes read in rax.
 
         ; Check the result of the read syscall
-        cmp rax, 0                       ; Check if the number of bytes read is zero (indicating EOF)
+        cmp rax, 0                      ; Check if the number of bytes read is zero (indicating EOF)
         je .read_str_eof                ; If EOF, jump to the `.read_str_eof` label to handle it
-        jl .read_str_error                ; If rax is negative, an error occurred, so jump to the `.read_str_error` label 
+        jl .read_str_error              ; If rax is negative, an error occurred, so jump to the `.read_str_error` label 
 
         ; If we reach here, the read was successful and rax contains the number of bytes read
-        dec rax                          ; Decrement rax to get the index of the last character (excluding the null terminator)
-        cmp byte [rsi + rax], 0xA          ; Check if the last character read is a newline (0xA)
-        jne .read_str_not_newline          ; If it's not a newline, jump to the `.read_str_not_newline` label
+        dec rax                         ; Decrement rax to get the index of the last character (excluding the null terminator)
+        cmp byte [rsi + rax], 0xA       ; Check if the last character read is a newline (0xA)
+        jne .read_str_not_newline       ; If it's not a newline, jump to the `.read_str_not_newline` label
 
         ; If the last character is a newline, replace it with a null terminator
-        mov byte [rsi + rax], 0          ; Replace the newline character with a null terminator
-        jmp .read_str_done                ; Jump to the `.read_str_done` label to finish the function
+        mov byte [rsi + rax], 0         ; Replace the newline character with a null terminator
+        jmp .read_str_done              ; Jump to the `.read_str_done` label to finish the function
         ; we leave rax decremented as it is the true length of the string (excluding the null terminator)
 
-    .read_str_not_newline:
-        inc rax                          ; If the last character is not a newline, increment rax to account for the null terminator
+        .read_str_not_newline:
+        inc rax                         ; If the last character is not a newline, increment rax to account for the null terminator
 
-    .read_str_eof:
+        .read_str_eof:
         ; If we reach here, it means we hit EOF (rax is 0) or we have a valid string without a newline. We need to ensure the string is null-terminated.
-        mov byte [rsi + rax], 0          ; Null-terminate the string at the current index (rax)
+        mov byte [rsi + rax], 0         ; Null-terminate the string at the current index (rax)
 
-    .read_str_error:
-        ; If we reach here, it means an error occurred during the read syscall (rax is negative). We can handle the error as needed, but for now, we will just return with rax containing the number of bytes read (which will be negative in case of an error).
+        .read_str_error:
+        ; If we reach here, it means an error occurred during the read syscall (rax is negative). We can handle the error as needed,
+        ; but for now, we will just return with rax containing the number of bytes read (which will be negative in case of an error).
         ret
 
-    .read_str_done:
+        .read_str_done:
         ret                             ; Return from the function, with rax containing the number of bytes read
 
 
