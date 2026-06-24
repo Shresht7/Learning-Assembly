@@ -187,6 +187,7 @@ To make a syscall in `x86-64` assembly, you typically:
 ## 📕 References
 
 - [NASM: The Netwide Assembler](https://www.nasm.us/)
+- [NASM: Docs](https://www.nasm.us/docs/3.01/)
 
 ### 📄 Manuals
 
