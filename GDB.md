@@ -1,5 +1,15 @@
 # GDB
 
+GDB (GNU Debugger) lets you step through assembly instructions, inspect registers and memory, set breakpoints, and examine the program's state at any point.
+
+Compile with debug symbols to get the most out of it:
+
+```sh
+nasm -f elf64 -g -F dwarf program.asm -o program.o
+ld program.o -o program
+gdb ./program
+```
+
 ## Quick Reference
 
 ```bash
@@ -123,7 +133,7 @@ $4 = 150 '\226'
 
 ```gdb
 (gdb) watch sum
-Harware watchpoint 2: sum
+Hardware watchpoint 2: sum
 
 # Run until sum is modified
 (gdb) continue
@@ -150,7 +160,7 @@ New value = 150
 1: /x $rax = 0x0
 
 # Show memory contents
-(gdb) display/x *(long*)($rdi + $rci*8)
+(gdb) display/x *(long*)($rdi + $rcx*8)
 2: /x *(long*)($rdi + $rcx*8) = 0xa
 
 # Now every stepi shows these automatically
