@@ -33,5 +33,4 @@ compile_and_run_test() {
 # Loop through each test file and compile and run it
 for TEST_FILE in $TEST_FILES; do
     compile_and_run_test $TEST_FILE
-    $OUT/$TEST_NAME.test
 done
