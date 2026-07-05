@@ -172,7 +172,7 @@ Different architectures need different assembly as they have different registers
 - Backwards Compatible: You can use `AL` (lower 8 bits), `AH` (upper 8 bits fo lower 16), `AX` (lower 16 bits), `EAX` (lower 32 bits), `RAX` (full 64 bits)
 - We are here
 
-#### Why x86 Dominate PC?
+#### Why Does x86 Dominate the PC?
 
 1. **Backward Compatibility**: Every new x86 CPU can run ancient 8086 code from 1978!
 2. **Massive Software Ecosystem**: Windows, Linux, Most Desktop Apps
@@ -181,20 +181,40 @@ Different architectures need different assembly as they have different registers
 
 ### `ARM`
 
-ARM (a RISC architecture) is dominant in:
-- Smartphones (every iPhone, Android)
-- Tablets
-- Apple Silicon Macs (M1, M2, M3)
-- Servers (AWS Graviton)
-- Embedded Systems
+ARM is a **RISC** (Reduced Instruction Set Computer) architecture. Unlike x86's CISC approach (where individual instructions can be complex and multi-cycle) ARM keeps its instructions simple, uniform in size, and generally executes in a single cycle. This trade-off means ARM needs more instructions to do the same work, but each instruction runs faster and uses less power.
 
-ARM is simpler and more power-efficient.
+The RISC vs CISC divide defined CPU design from the 1980s onward. x86 went CISC for backward compatibility and density; ARM went RISC for simplicity and efficiency.
+
+#### ARM Generations
+
+| Architecture       | Notable Cores              | Key Changes                                                  |
+| ------------------ | -------------------------- | ------------------------------------------------------------ |
+| **ARMv7** (2011)   | Cortex-A8, A9, A15         | 32-bit, used in early smartphones                            |
+| **ARMv8-A** (2014) | Cortex-A53, A72, Apple A7+ | Added 64-bit (`aarch64`), Apple's first custom ARM chip (A7) |
+| **ARMv9** (2021)   | Cortex-X2, A510, A710      | Focus on security (CCA), DSP, and ML performance             |
+
+#### Arms
+
+| Architecture | Typical Devices                                           |
+| ------------ | --------------------------------------------------------- |
+| **Cortex-M** | Microcontrollers, IoT, Arduino-style boards               |
+| **Cortex-R** | Real-time: automotive, medical devices                    |
+| **Cortex-A** | Application: smartphones, tablets, servers, Apple Silicon |
+
+**Where ARM dominates:**
+- Smartphones and Tablets: virtually every mobile device
+- Apple Silicon (M1, M2, M3, M4) — transitioning from x86
+- Servers: AWS Graviton, Ampere, Microsoft Azure Cobalt
+- Embedded Systems: routers, IoT, microcontrollers
+- Raspberry Pi: educational and hobbyist computing
+
+ARM's efficiency advantage is why it's now making inroads into laptops and servers, exactly the space x86 has owned for decades.
 
 ---
 
 ## Registers
 
-Registers are small, extremely fast storage locations built directly into the CPU. They can be though of as the CPU's working memory. Accessing the registers is super fast (~1 CPU cycle i.e. 0.3 nanoseconds on a 3GHz CPU) when compared to L1 (~4 cycles), L2 (~12 cycles), RAM (~200 cycles), or SSD (~millions of cycles). **Registers are 100-1000x faster than RAM**.
+Registers are small, extremely fast storage locations built directly into the CPU. They can be thought of as the CPU's working memory. Accessing the registers is super fast (~1 CPU cycle i.e. 0.3 nanoseconds on a 3GHz CPU) when compared to L1 (~4 cycles), L2 (~12 cycles), RAM (~200 cycles), or SSD (~millions of cycles). **Registers are 100-1000x faster than RAM**.
 
 The CPU loads data from the RAM into registers, performs the operations on the registers, then stores the results back to RAM.
 
