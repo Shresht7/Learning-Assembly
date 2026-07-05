@@ -103,6 +103,22 @@ Disassembly of section .text:
 - [`run.sh`](./run.sh): Interactive script to compile, link, and run the assembly code.
 - [`run_library_tests.sh`](./run_library_tests.sh): Script to compile, link, and run the assembly code for library tests.
 
+### Library
+
+The [`library/`](./library) folder contains reusable assembly code. Every time I write assembly I feel like I'm reinventing C and it's standard library from first principles. It's included into programs using NASM's `%include` directive.
+
+| File                                                                                              | Description                                                                                                        |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [`syscalls.asm`](./library/syscalls.asm)                                                          | System call wrappers (`WRITE`, `READ`, `PRINT`, `EXIT` macros) and constants (syscall numbers, file descriptors)   |
+| [`strutils.asm`](./library/strutils.asm)                                                          | String utilities: `strlen`, `strcmp`, `itoa`, `atoi`, `strcpy`, `strcat`, `strfindchar`, base conversion, and more |
+| [`stdio.asm`](./library/stdio.asm)                                                                | I/O functions: `print_str`, `read_str`, `print_int`; builds on top of `syscalls.asm` and `strutils.asm`            |
+| [`test-assert.asm`](./library/test-assert.asm)                                                    | Unit test framework with `ASSERT_EQ`/`NE`/`LT`/`LE`/`GT`/`GE`/`TRUE`/`FALSE`/`STR_EQ` macros                       |
+| [`stdio.test.asm`](./library/stdio.test.asm) / [`strutils.test.asm`](./library/strutils.test.asm) | Test files for the library modules                                                                                 |
+
+### Debugging
+
+A GDB quick reference cheatsheet can be found at [`GDB.md`](./GDB.md).
+
 ---
 
 ## System Architecture
