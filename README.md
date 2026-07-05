@@ -40,6 +40,9 @@ ld ./obj/hello.o -o ./out/hello
 ./out/hello
 ```
 
+> [!NOTE]
+> If you take a look at the file-size of the executable (using `ls -lh hello`), you'll notice that it is absolutely tiny compared to anything written in C, Python, or Go etc. It contains nothing but the exact CPU instructions you wrote.
+
 ### To debug with GDB, compile with debug symbols:
 
 ```sh
@@ -50,6 +53,50 @@ ld debug_test.o -o debug_test
 
 - `-g`: Include debug info
 - `-F dwarf`: Use DWARF debug format
+
+### To look at the raw machine code
+
+You can use a hex-dump or hex-editor utility to inspect the actual binary contents of the compiled executable.
+
+```sh
+xxd hello
+```
+
+it looks something like
+
+```
+00000000: 7f45 4c46 0201 0100 0000 0000 0000 0000  .ELF............
+00000010: 0100 3e00 0100 0000 0000 0000 0000 0000  ..>.............
+00000020: 0000 0000 0000 0000 4000 0000 0000 0000  ........@.......
+00000030: 0000 0000 4000 0000 0000 4000 0700 0300  ....@.....@.....
+00000040: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+...
+```
+
+
+Alternatively, you can use `objdump` to see machine code alongside assembly instructions:
+
+```sh
+objdump -d hello
+```
+
+```
+hello:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000401000 <_start>:
+  401000:       b8 01 00 00 00          mov    $0x1,%eax
+  401005:       bf 01 00 00 00          mov    $0x1,%edi
+  40100a:       48 be 00 20 40 00 00    movabs $0x402000,%rsi
+  401011:       00 00 00 
+  401014:       ba 0e 00 00 00          mov    $0xe,%edx
+  401019:       0f 05                   syscall 
+  40101b:       b8 3c 00 00 00          mov    $0x3c,%eax
+  401020:       bf 00 00 00 00          mov    $0x0,%edi
+  401025:       0f 05                   syscall 
+```
 
 ---
 
