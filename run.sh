@@ -2,20 +2,25 @@
 
 # Compile, link and run a ASM file
 
-LIB="library/"
 OBJ="obj/"
 OUT="out/"
 
+mkdir -p "$OBJ" "$OUT"
+
 # Interactively select an ASM source file if tools are available, otherwise use $1
-if command -v fd >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && command -v bat >/dev/null 2>&1; then
-    FILE=$(fd -e asm | fzf --preview 'bat --color=always {}' --preview-window 'right:75%')
+if command -v fzf >/dev/null 2>&1; then
+    if command -v fd >/dev/null 2>&1 && command -v bat >/dev/null 2>&1; then
+        FILE=$(fd -e asm | fzf --preview 'bat --color=always {}' --preview-window 'right:75%')
+    else
+        FILE=$(find . -name '*.asm' | fzf)
+    fi
 else
     FILE="$1"
 fi
 
 # Check if a file was selected and it exists
 if [ -z "$FILE" ] || [ ! -f "$FILE" ]; then
-    echo "No file selected or file does not exist."
+    echo "Usage: $0 <file.asm>"
     exit 1
 fi
 
@@ -38,9 +43,6 @@ if [ $? -ne 0 ]; then
     echo "Linking failed."
     exit 1
 fi
-
-# Make the executable file executable
-chmod +x "$OUT/${BASENAME}"
 
 # Run the executable
 "$OUT/${BASENAME}"
