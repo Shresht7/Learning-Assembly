@@ -55,11 +55,11 @@ section .data
     push r14
     push r15
 
-    ; Move actual (%1) and expected (%2) into registers for comparison
-    mov r14, %1                         ; Move actual value into r14
-    mov r15, %2                         ; Move expected value into r15
+    ; Move expected (%1) and actual (%2) into registers for comparison
+    mov r14, %1                         ; Move expected value into r14
+    mov r15, %2                         ; Move actual value into r15
 
-    cmp r14, r15                        ; Compare expected and actual values
+    cmp r15, r14                        ; Compare actual with expected (jcc conditions are relative to the first operand)
     %4 %%passed                         ; Use the provided jump instruction as the success case
 
     %%failed:
