@@ -1,6 +1,14 @@
 # Learning Assembly
 
-Assembly is the lowest-level human-readable programming language. It maps directly to machine code - the binary instructions that the CPU executes. Each assembly instruction typically corresponds to one CPU operation.
+**Assembly** is the _lowest-level human-readable programming language_. It maps directly to machine code, the binary instructions that the CPU executes. Each assembly instruction typically corresponds to one CPU operation.
+
+## Machine Code
+
+Machine code is the set of binary instructions that a CPU can execute directly. It consists of sequences of 0s and 1s, which represent specific operations and data. Each CPU architecture has its own unique machine code instruction set.
+
+A CPU only understands 0s and 1s; machine-code consists of operations like "add these two numbers", "store this value in memory", or "jump to this instruction if a condition is met". Each operation has a unique binary representation, known as an **opcode**.
+
+Assembly language provides a more human-readable way to write these instructions, using mnemonics (like `MOV`, `ADD`, `JMP`) instead of raw binary. An assembler translates assembly code into machine code.
 
 ---
 
@@ -8,18 +16,17 @@ Assembly is the lowest-level human-readable programming language. It maps direct
 
 ### Requirements
 
-You need an **assembler** to turn your text into machine code, and a linker to turn that machine code into an executable file.
+You need an **assembler** to turn your _code_ ("text") into machine code, and a **linker** to turn that machine code into an executable file that the operating system can run.
 
-- `nasm`: The Netwide Assembler, a popular assembler for x86 architecture. Uses Intel syntax, which is generally considered easier to read.
-- `ld`: The GNU linker, which combines object files into a single executable.
+- `nasm`: The **Netwide Assembler**, a popular assembler for x86 architecture. Uses ***Intel*** syntax, which is generally considered easier to read.
+- `ld`: The **GNU linker**, which combines object files into a single executable.
 
 Nice to have:
 
-- `gdb`: The GNU Debugger, a powerful tool for debugging programs. It allows you to inspect the state of a program while it's running or after it crashes.
-- `make`: A build automation tool that automatically builds executable programs and libraries from source code by reading files called Makefiles.
+- `gdb`: The **GNU Debugger**, a powerful tool for debugging programs. It allows you to inspect the state of a program while it's running or after it crashes.
 
 ```sh
-sudo dnf install nasm binutils gdb make
+sudo dnf install nasm binutils gdb
 ```
 
 ### To compile the `.asm` files
@@ -28,11 +35,18 @@ sudo dnf install nasm binutils gdb make
 nasm -f elf64 ./src/hello.asm -o ./obj/hello.o
 ```
 
+Compilation is the process of converting your assembly code into an object file (`.o`), which contains machine code but is not yet a complete executable. An object file can be linked with other object files to create a final executable.
+
+> [!NOTE]
+> The `-f elf64` flag tells NASM to generate a 64-bit ELF object file. If you are on a 32-bit system, use `-f elf32` instead. On Windows, you can use `-f win64` or `-f win32` depending on your target.
+
 ### To link the object files into an executable
 
 ```sh
 ld ./obj/hello.o -o ./out/hello
 ```
+
+Linking is the process of combining one or more object files into a single executable file. The linker resolves references between object files, assigns final memory addresses, and produces an executable that can be run by the operating system.
 
 ### To run the compiled binary
 
@@ -53,6 +67,14 @@ ld debug_test.o -o debug_test
 
 - `-g`: Include debug info
 - `-F dwarf`: Use DWARF debug format
+
+Then run GDB:
+
+```sh
+gdb ./debug_test
+```
+
+See [`GDB.md`](./GDB.md) for more information.
 
 ### To look at the raw machine code
 
@@ -137,7 +159,7 @@ Different architectures need different assembly as they have different registers
 
 ### `x86`
 
-`x86` is a family of _instruction set architectures (ISAs)_ based on the _Intel 8086 processor_ from 1978. It's called "x86" because Intel's processors were named "8086", "80186", "80286" etc. - notice the "86" pattern. 
+`x86` is a family of _instruction set architectures (ISAs)_ based on the _Intel 8086 processor_ from 1978. It's called "x86" because Intel's processors were named "8086", "80186", "80286" etc.; notice the "86" pattern. 
 
 #### `8086` (1978): The Beginning
 
@@ -203,12 +225,12 @@ The RISC vs CISC divide defined CPU design from the 1980s onward. x86 went CISC 
 
 **Where ARM dominates:**
 - Smartphones and Tablets: virtually every mobile device
-- Apple Silicon (M1, M2, M3, M4) — transitioning from x86
+- Apple Silicon (M1, M2, M3, M4), transitioning from x86
 - Servers: AWS Graviton, Ampere, Microsoft Azure Cobalt
 - Embedded Systems: routers, IoT, microcontrollers
 - Raspberry Pi: educational and hobbyist computing
 
-ARM's efficiency advantage is why it's now making inroads into laptops and servers, exactly the space x86 has owned for decades.
+ARM's efficiency advantage is why it's gaining ground in laptops and servers, exactly the space x86 has owned for decades.
 
 ---
 
