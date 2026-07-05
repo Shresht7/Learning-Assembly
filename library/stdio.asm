@@ -10,11 +10,15 @@ section .bss
 section .text
 
 
-    ; print_str(rdi: *str)
-    ; Prints a null-terminated string to stdout
-    ;
-    ; @param rdi: pointer to the null-terminated string
-    ; @return: nothing
+    ;;; `print_str(string rdi: *char)`
+    ;;;
+    ;;; Prints a null-terminated string to stdout.
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;
+    ;;; Returns:
+    ;;;   Nothing.
     print_str:
         push rdi                        ; Save the pointer to the string on the stack for safekeeping while we calculate its length
 
@@ -33,12 +37,16 @@ section .text
 
 
 
-    ; read_str(rdi: *buffer, rsi: buffer_size) -> rax: bytes_read
-    ; Reads a string from stdin into a buffer
-    ;
-    ; @param rdi: pointer to the buffer where the string will be stored
-    ; @param rsi: size of the buffer (maximum number of bytes to read)
-    ; @return rax: number of bytes read (excluding the null terminator)
+    ;;; `read_str(buffer rdi: *char, buffer_size rsi: int) -> bytes_read rax: int`
+    ;;;
+    ;;; Reads a string from stdin into a buffer.
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] buffer: pointer to the buffer where the string will be stored
+    ;;;   * [rsi] buffer_size: size of the buffer (maximum number of bytes to read)
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] bytes_read: number of bytes read (excluding the null terminator)
     read_str:
         ; Shuffle the parameters to match the syscall convention for read
         mov rdx, rsi                    ; Move the buffer size into rdx (the count for the read syscall)
@@ -78,11 +86,15 @@ section .text
         .read_str_done:
         ret                             ; Return from the function, with rax containing the number of bytes read
 
-    ; print_int(rdi: int)
-    ; Prints an integer to stdout
-    ;
-    ; @param rdi: integer to print
-    ; @return: nothing
+    ;;; `print_int(integer rdi: int)`
+    ;;;
+    ;;; Prints an integer to stdout.
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] integer: integer to print
+    ;;;
+    ;;; Returns:
+    ;;;   Nothing.
     print_int:
         ; Convert integer to string
         ; rdi already contains the integer to print
@@ -97,13 +109,30 @@ section .text
 ; MACROS
 ; ------
 
-; PRINT_STR macro to print a null-terminated string to stdout
+;;; `PRINT_STR <*str>`
+;;;
+;;; Prints a null-terminated string to stdout.
+;;;
+;;; Parameters:
+;;;   * <*str>: pointer to the null-terminated string (passed to `print_str`)
+;;;
+;;; Returns:
+;;;   Nothing.
 %macro PRINT_STR 1
     mov rdi, %1                     ; Move the pointer to the string into rdi (the parameter for print_str)
     call print_str                  ; Call the print_str function to print the string
 %endmacro
 
-; READ_STR macro to read a string from stdin into a buffer
+;;; `READ_STR <*buffer>, <length>`
+;;;
+;;; Reads a string from stdin into a buffer.
+;;;
+;;; Parameters:
+;;;   * <*buffer>: pointer to the buffer where the string will be stored (passed to `read_str`)
+;;;   * <length>: size of the buffer (passed to `read_str`)
+;;;
+;;; Returns:
+;;;   * [rax] bytes_read: number of bytes read (excluding the null terminator)
 %macro READ_STR 2
     mov rdi, %1                     ; Move the pointer to the buffer into rdi (the parameter for read_str)
     mov rsi, %2                     ; Move the size of the buffer into rsi (the parameter for read_str)

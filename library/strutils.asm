@@ -11,15 +11,15 @@ section .data
 section .text
 
 
-    ; `strlen(string rdi: *char) -> length rax: int`
-    ;
-    ; Returns the length of a null-terminated string
-    ;
-    ; Parameters:
-    ;   * [rdi] string: pointer to the null-terminated string
-    ;
-    ; Returns:
-    ;   * [rax] length: length of the string (not including the null terminator)
+    ;;; `strlen(string rdi: *char) -> length rax: int`
+    ;;;
+    ;;; Returns the length of a null-terminated string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] length: length of the string (not including the null terminator)
     strlen:
         mov rax, 0                          ; Initialize length counter to 0
         .strlen_loop:
@@ -32,15 +32,15 @@ section .text
 
 
 
-    ; `is_empty(string rdi: *char) -> yes rax: int`
-    ;
-    ; Checks if a null-terminated string is empty
-    ;
-    ; Parameters:
-    ;   * [rdi] string: pointer to the null-terminated string
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the string is empty, 0 otherwise
+    ;;; `is_empty(string rdi: *char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a null-terminated string is empty
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the string is empty, 0 otherwise
     is_empty:
         cmp byte [rdi], 0                   ; Compare the first byte of the string with the null terminator
         je .is_empty_true                   ; If equal, the string is empty, jump to `.is_empty_true`
@@ -52,19 +52,16 @@ section .text
 
 
 
-    ; `strcmp(str1 rdi: *char, str2 rsi: *char) -> result rax: int`
-    ;
-    ; Compares two null-terminated strings
-    ;
-    ; Parameters:
-    ;   * [rdi] str1: pointer to the first null-terminated string
-    ;   * [rsi] str2: pointer to the second null-terminated string
-    ;
-    ; Returns:
-    ;   * [rax] result:
-    ;     - 0   if the strings are equal
-    ;     - <0  if str1 < str2
-    ;     - >0  if str1 > str2
+    ;;; `strcmp(str1 rdi: *char, str2 rsi: *char) -> result rax: int`
+    ;;;
+    ;;; Compares two null-terminated strings
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] str1: pointer to the first null-terminated string
+    ;;;   * [rsi] str2: pointer to the second null-terminated string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] result: 0 if the strings are equal, <0 if str1 < str2, >0 if str1 > str2
     strcmp:
         xor rax, rax                        ; Clear rax to use it as a result accumulator
         .strcmp_loop:
@@ -90,15 +87,15 @@ section .text
 
 
 
-    ; `is_digit(char rdi: char) -> yes rax: int`
-    ;
-    ; Checks if a character is a digit (0-9)
-    ;
-    ; Parameters:
-    ;   * [rdi] char: character to check
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the character is a digit, 0 otherwise
+    ;;; `is_digit(char rdi: char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a character is a digit (0-9)
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] char: character to check
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the character is a digit, 0 otherwise
     is_digit:
         xor rax, rax                        ; Assume false (not a digit)
         cmp rdi, '0'                        ; Compare the character with '0'
@@ -112,15 +109,15 @@ section .text
 
 
 
-    ; `is_uppercase(char rdi: char) -> yes rax: int`
-    ;
-    ; Checks if a character is an uppercase letter (A-Z).
-    ;
-    ; Parameters:
-    ;   * [rdi] char: character to check
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the character is an uppercase letter, 0 otherwise
+    ;;; `is_uppercase(char rdi: char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a character is an uppercase letter (A-Z)
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] char: character to check
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the character is an uppercase letter, 0 otherwise
     is_uppercase:
         xor rax, rax                        ; Assume false (not an uppercase letter)
         cmp rdi, 'A'                        ; Compare the character with 'A'
@@ -134,15 +131,15 @@ section .text
 
 
 
-    ; `is_lowercase(char rdi: char) -> yes rax: int`
-    ;
-    ; Checks if a character is a lowercase letter (a-z)
-    ;
-    ; Parameters:
-    ;   * [rdi] char: character to check
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the character is a lowercase letter, 0 otherwise
+    ;;; `is_lowercase(char rdi: char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a character is a lowercase letter (a-z)
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] char: character to check
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the character is a lowercase letter, 0 otherwise
     is_lowercase:
         xor rax, rax                        ; Assume false (not a lowercase letter)
         cmp rdi, 'a'                        ; Compare the character with 'a'
@@ -156,15 +153,15 @@ section .text
 
 
 
-    ; `is_alphanumeric(char rdi: char) -> yes rax: int`
-    ;
-    ; Checks if a character is alphanumeric (0-9, A-Z, a-z)
-    ;
-    ; Parameters:
-    ;   * [rdi] char: character to check
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the character is alphanumeric, 0 otherwise
+    ;;; `is_alphanumeric(char rdi: char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a character is alphanumeric (0-9, A-Z, a-z)
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] char: character to check
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the character is alphanumeric, 0 otherwise
     is_alphanumeric:
         call is_digit                       ; Check if the character is a digit
         cmp rax, 1                          ; Compare the result with 1 (true)
@@ -183,16 +180,16 @@ section .text
 
 
 
-    ; `itoa(integer rdi: int, buffer rsi: *char) -> string rax: *char`
-    ;
-    ; Converts an integer to a null-terminated string
-    ;
-    ; Parameters:
-    ;   * [rdi] integer: integer to convert
-    ;   * [rsi] buffer: pointer to the buffer where the string will be stored
-    ;
-    ; Returns:
-    ;   * [rax] string: pointer to the null-terminated string
+    ;;; `itoa(integer rdi: int, buffer rsi: *char) -> string rax: *char`
+    ;;;
+    ;;; Converts an integer to a null-terminated string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] integer: integer to convert
+    ;;;   * [rsi] buffer: pointer to the buffer where the string will be stored
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] string: pointer to the null-terminated string
     itoa:
         mov rax, rdi                    ; Move the integer into rax for processing
         mov rcx, 10                     ; Set the divisor to 10 for decimal conversion
@@ -228,15 +225,15 @@ section .text
         ret                             ; Return from the function, with the string stored in the buffer pointed to by rsi
 
 
-    ; `atoi(string rdi: *char) -> integer rax: int`
-    ;
-    ; Converts a null-terminated string to an integer
-    ;
-    ; Parameters:
-    ;   * [rdi] string: pointer to the null-terminated string
-    ;
-    ; Returns:
-    ;   * [rax] integer: the converted integer value
+    ;;; `atoi(string rdi: *char) -> integer rax: int`
+    ;;;
+    ;;; Converts a null-terminated string to an integer
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] integer: the converted integer value
     atoi:
         xor rax, rax                    ; Clear rax to use it as the result accumulator
 
@@ -257,17 +254,17 @@ section .text
 
 
 
-    ; `base_to_str(integer rdi: int, buffer rsi: *char, base rdx: int) -> string rax: *char`
-    ;
-    ; Converts an integer to a null-terminated string in the specified base (2 to 36)
-    ;
-    ; Parameters:
-    ;   * [rdi] integer: integer to convert
-    ;   * [rsi] buffer: pointer to the buffer where the string will be stored
-    ;   * [rdx] base: base for conversion (between 2 and 36)
-    ;
-    ; Returns:
-    ;   * [rax] string: pointer to the null-terminated string
+    ;;; `base_to_str(integer rdi: int, buffer rsi: *char, base rdx: int) -> string rax: *char`
+    ;;;
+    ;;; Converts an integer to a null-terminated string in the specified base (2 to 36)
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] integer: integer to convert
+    ;;;   * [rsi] buffer: pointer to the buffer where the string will be stored
+    ;;;   * [rdx] base: base for conversion (between 2 and 36)
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] string: pointer to the null-terminated string
     base_to_str:
         mov rax, rdi                        ; Move the integer into rax for processing
         mov rcx, rdx                        ; Move the base into rcx for division
@@ -304,16 +301,16 @@ section .text
 
 
 
-    ; `str_to_base(string rdi: *char, base rsi: int) -> integer rax: int`
-    ;
-    ; Converts a string in the specified base (2-36) to an integer
-    ;
-    ; Parameters:
-    ;   * [rdi] string: pointer to the null-terminated string
-    ;   * [rsi] base: base of the string representation (between 2 and 36)
-    ;
-    ; Returns:
-    ;   * [rax] integer: the converted integer value, or 0 if an error occurred
+    ;;; `str_to_base(string rdi: *char, base rsi: int) -> integer rax: int`
+    ;;;
+    ;;; Converts a string in the specified base (2-36) to an integer
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;   * [rsi] base: base of the string representation (between 2 and 36)
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] integer: the converted integer value, or 0 if an error occurred
     str_to_base:
         ; Save the registers that we will use to avoid overwriting any important values
         push r12
@@ -394,16 +391,16 @@ section .text
             ret                             ; Return from the function, with rax containing the converted integer value (or 0 in case of an error)
 
 
-    ; `strcpy(dest rdi: *char, src rsi: *char) -> dest rax: *char`
-    ;
-    ; Copies a null-terminated string from the source to the destination
-    ;
-    ; Parameters:
-    ;   * [rdi] dest: pointer to the destination string
-    ;   * [rsi] src: pointer to the source string
-    ;
-    ; Returns:
-    ;   * [rax] dest: pointer to the destination string
+    ;;; `strcpy(dest rdi: *char, src rsi: *char) -> dest rax: *char`
+    ;;;
+    ;;; Copies a null-terminated string from the source to the destination
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] dest: pointer to the destination string
+    ;;;   * [rsi] src: pointer to the source string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] dest: pointer to the destination string
     strcpy:
         mov rax, rdi                        ; Save the destination pointer in rax for return
         .copy_loop:
@@ -417,17 +414,17 @@ section .text
         ret                                 ; Return from the function, with rax containing the pointer to the destination string
 
 
-    ; `strncpy(dest rdi: *char, src rsi: *char, n rdx: int) -> dest rax: *char`
-    ;
-    ; Copies up to n characters from the source string to the destination string
-    ;
-    ; Parameters:
-    ;   * [rdi] dest: pointer to the destination string
-    ;   * [rsi] src: pointer to the source string
-    ;   * [rdx] n: maximum number of characters to copy
-    ;
-    ; Returns:
-    ;   * [rax] dest: pointer to the destination string
+    ;;; `strncpy(dest rdi: *char, src rsi: *char, n rdx: int) -> dest rax: *char`
+    ;;;
+    ;;; Copies up to n characters from the source string to the destination string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] dest: pointer to the destination string
+    ;;;   * [rsi] src: pointer to the source string
+    ;;;   * [rdx] n: maximum number of characters to copy
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] dest: pointer to the destination string
     strncpy:
         mov rax, rdi                        ; Save the destination pointer in rax for return
         xor rcx, rcx                        ; Clear rcx to use it as a counter
@@ -449,16 +446,16 @@ section .text
 
 
 
-    ; `strcat(dest rdi: *char, src rsi: *char) -> dest rax: *char`
-    ;
-    ; Concatenates the source string to the end of the destination string
-    ;
-    ; Parameters:
-    ;   * [rdi] dest: pointer to the destination string
-    ;   * [rsi] src: pointer to the source string
-    ;
-    ; Returns:
-    ;   * [rax] dest: pointer to the destination string
+    ;;; `strcat(dest rdi: *char, src rsi: *char) -> dest rax: *char`
+    ;;;
+    ;;; Concatenates the source string to the end of the destination string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] dest: pointer to the destination string
+    ;;;   * [rsi] src: pointer to the source string
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] dest: pointer to the destination string
     strcat:
         mov rax, rdi                        ; Save the destination pointer in rax for return
         ; Find the end of the destination string
@@ -479,17 +476,17 @@ section .text
 
 
 
-    ; `strncat(dest rdi: *char, src rsi: *char, n rdx: int) -> dest rax: *char`
-    ;
-    ; Concatenates up to n characters from the source string to the end of the destination string
-    ;
-    ; Parameters:
-    ;   * [rdi] dest: pointer to the destination string
-    ;   * [rsi] src: pointer to the source string
-    ;   * [rdx] n: maximum number of characters to concatenate
-    ;
-    ; Returns:
-    ;   * [rax] dest: pointer to the destination string
+    ;;; `strncat(dest rdi: *char, src rsi: *char, n rdx: int) -> dest rax: *char`
+    ;;;
+    ;;; Concatenates up to n characters from the source string to the end of the destination string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] dest: pointer to the destination string
+    ;;;   * [rsi] src: pointer to the source string
+    ;;;   * [rdx] n: maximum number of characters to concatenate
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] dest: pointer to the destination string
     strncat:
         mov rax, rdi                        ; Save the destination pointer in rax for return
         ; Find the end of the destination string
@@ -518,16 +515,16 @@ section .text
         
 
 
-    ; `strfindchar(string rdi: *char, char rsi: char) -> index rax: int`
-    ;
-    ; Searches for the first occurrence of a character in a null-terminated string
-    ;
-    ; Parameters:
-    ;   * [rdi] string: pointer to the null-terminated string
-    ;   * [rsi] char: character to search for
-    ;
-    ; Returns:
-    ;   * [rax] index: index of the first occurrence of the character, or -1 if not found
+    ;;; `strfindchar(string rdi: *char, char rsi: char) -> index rax: int`
+    ;;;
+    ;;; Searches for the first occurrence of a character in a null-terminated string
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;   * [rsi] char: character to search for
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] index: index of the first occurrence of the character, or -1 if not found
     strfindchar:
         xor rax, rax                        ; Clear rax to use it as an index counter
         .search_loop:
@@ -545,16 +542,16 @@ section .text
 
 
 
-    ; `strstartswith(string rdi: *char, prefix rsi: *char) -> yes rax: int`
-    ;
-    ; Checks if a null-terminated string starts with a given prefix
-    ;
-    ; Parameters:
-    ;   * [rdi] string: The address of the string to check
-    ;   * [rsi] prefix: The address of the prefix string to check for
-    ;
-    ; Returns:
-    ;   * [rax] yes: 1 if the string starts with the prefix, 0 otherwise
+    ;;; `strstartswith(string rdi: *char, prefix rsi: *char) -> yes rax: int`
+    ;;;
+    ;;; Checks if a null-terminated string starts with a given prefix
+    ;;;
+    ;;; Parameters:
+    ;;;   * [rdi] string: pointer to the null-terminated string
+    ;;;   * [rsi] prefix: pointer to the prefix string to check for
+    ;;;
+    ;;; Returns:
+    ;;;   * [rax] yes: 1 if the string starts with the prefix, 0 otherwise
     strstartswith:
         .check_loop:
             mov al, byte [rdi]              ; Load the current character from the string

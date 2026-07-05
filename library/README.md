@@ -138,6 +138,9 @@ Prints a null-terminated string to stdout.
 
 - [**`rdi`**] _`string`_: pointer to the null-terminated string
 
+##### Returns:
+
+Nothing.
 
 #### `read_str(buffer rdi: *char, buffer_size rsi: int) -> bytes_read rax: int`
 
@@ -160,6 +163,9 @@ Prints an integer to stdout.
 
 - [**`rdi`**] _`integer`_: integer to print
 
+##### Returns:
+
+Nothing.
 
 ### Macros
 
@@ -433,8 +439,8 @@ Checks if a null-terminated string starts with a specified prefix
 
 ##### Parameters:
 
-- [**`rdi`**] _`string`_: The address of the string to check
-- [**`rsi`**] _`prefix`_: The address of the prefix string to check for
+- [**`rdi`**] _`string`_: pointer to the null-terminated string
+- [**`rsi`**] _`prefix`_: pointer to the prefix string to check for
 
 ##### Returns:
 
