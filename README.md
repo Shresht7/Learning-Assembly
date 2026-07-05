@@ -223,8 +223,8 @@ Disassembly of section .text:
 
 ### Scripts
 
-- [`run.sh`](./run.sh): Interactive script to compile, link, and run the assembly code.
-- [`run_library_tests.sh`](./run_library_tests.sh): Script to compile, link, and run the assembly code for library tests.
+- [`run.sh`](./run.sh): Interactive script to compile, link, and run any `.asm` file.
+- [`library/run_tests.sh`](./library/run_tests.sh): Script to compile, link, and run all library tests.
 
 ### Library
 
