@@ -8,17 +8,29 @@ Assembly is the lowest-level human-readable programming language. It maps direct
 
 ### Requirements
 
-- `nasm`
-- `gdb`
+You need an **assembler** to turn your text into machine code, and a linker to turn that machine code into an executable file.
+
+- `nasm`: The Netwide Assembler, a popular assembler for x86 architecture. Uses Intel syntax, which is generally considered easier to read.
+- `ld`: The GNU linker, which combines object files into a single executable.
+
+Nice to have:
+
+- `gdb`: The GNU Debugger, a powerful tool for debugging programs. It allows you to inspect the state of a program while it's running or after it crashes.
+- `make`: A build automation tool that automatically builds executable programs and libraries from source code by reading files called Makefiles.
 
 ```sh
-sudo dnf install nasm gdb make
+sudo dnf install nasm binutils gdb make
 ```
 
 ### To compile the `.asm` files
 
 ```sh
 nasm -f elf64 ./src/hello.asm -o ./obj/hello.o
+```
+
+### To link the object files into an executable
+
+```sh
 ld ./obj/hello.o -o ./out/hello
 ```
 
