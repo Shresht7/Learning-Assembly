@@ -262,6 +262,37 @@ To make a syscall in `x86-64` assembly, you typically:
    - `RDX`: 3rd argument
 3. Execute the `syscall` instruction to hand control to the Linux kernel.
 
+### Calling Conventions (System V ABI)
+
+When calling your own functions (or interfacing with C), the **System V AMD64 ABI** is the standard on Linux. The library functions in this repo follow this convention.
+
+**Argument passing**: first 6 integer/pointer args go in registers; the rest go on the stack (right-to-left):
+
+```
+Arg 1:  RDI
+Arg 2:  RSI
+Arg 3:  RDX
+Arg 4:  RCX
+Arg 5:  R8
+Arg 6:  R9
+Arg 7+: stack
+```
+
+**Return value:** `RAX` (or `RDX:RAX` for 128-bit values).
+
+**Register preservation:**
+
+| Preserved by callee | Scratch (caller-saved)   |
+| ------------------- | ------------------------ |
+| `RBX`, `RBP`, `RSP` | `RAX`, `RCX`, `RDX`      |
+| `R12`–`R15`         | `RSI`, `RDI`, `R8`–`R11` |
+
+- Callee-saved registers must be restored before returning.
+- Scratch registers may be clobbered by any function call; save them first if you need the values later.
+
+> [!CAUTION]
+> Windows uses a different calling convention (Microsoft x64), because of course it does. If you trying to write cross-platform assembly, you'll need to account for these differences; and good luck.
+
 ---
 
 ## 📕 References
