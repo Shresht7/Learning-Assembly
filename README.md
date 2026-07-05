@@ -6,9 +6,48 @@
 
 Machine code is the set of binary instructions that a CPU can execute directly. It consists of sequences of 0s and 1s, which represent specific operations and data. Each CPU architecture has its own unique machine code instruction set.
 
-A CPU only understands 0s and 1s; machine-code consists of operations like "add these two numbers", "store this value in memory", or "jump to this instruction if a condition is met". Each operation has a unique binary representation, known as an **opcode**.
+A CPU only understands 0s and 1s. Each operation has a unique binary representation, known as an **opcode**. For example, on x86-64:
 
-Assembly language provides a more human-readable way to write these instructions, using mnemonics (like `MOV`, `ADD`, `JMP`) instead of raw binary. An assembler translates assembly code into machine code.
+| Hex bytes        | Assembly     | Meaning                     |
+| ---------------- | ------------ | --------------------------- |
+| `b8 01 00 00 00` | `mov eax, 1` | Load the value 1 into `EAX` |
+| `0f 05`          | `syscall`    | Invoke the kernel           |
+
+Taking `b8 01 00 00 00` byte by byte:
+- `b8` is the opcode for "load a 32-bit immediate into `EAX`"
+- `01 00 00 00` is the value `1` stored in **little-endian** format (least significant byte first). In memory the bytes are `01`, then `00`, `00`, `00`; read as a 32-bit integer this is `0x00000001`.
+
+A more complex example from the `objdump` output below:
+
+```
+40100a:  48 be 00 20 40 00 00 00 00 00   movabs $0x402000,%rsi
+```
+
+- `48` is a **REX prefix** byte that tells the CPU "this is a 64-bit operation using the extended register set"
+- `be` is the opcode for "load a 64-bit immediate into `RSI`"
+- `00 20 40 00 00 00 00 00` is the address `0x402000` in little-endian
+
+Every instruction is just bytes. The CPU reads them, decodes the opcode and operands, and executes the operation.
+
+## Assembly Code
+
+Assembly language replaces raw byte sequences with human-readable **mnemonics** (`mov`, `add`, `syscall`). An **assembler** (like NASM) translates these mnemonics into machine code bytes.
+
+Three important things the assembler does for you:
+
+**Labels to addresses.** When you write `_start:`, the assembler records the address of that label. When you later write `jmp _start`, it computes the relative offset from the jump instruction to the label and encodes it as bytes.
+
+```asm
+; The assembler computes: jmp to (address of _start) - (address after jmp instruction)
+; and encodes that difference into the instruction bytes
+_start:
+    ...
+    jmp _start
+```
+
+**Relative offsets for jumps.** Conditional jumps like `je` don't encode the target address directly. They encode a signed offset relative to the next instruction. This means the same machine code can be relocated to any address without modification (position-independent code).
+
+**Operand encoding via ModR/M.** Instructions that operate on two registers or memory locations use a **ModR/M** byte that encodes the addressing mode, register operands, and any displacement. For example, `mov [rax], rbx` has a different ModR/M byte than `mov [rcx], rdx`. The assembler picks the right byte based on your operands.
 
 ---
 
@@ -35,10 +74,51 @@ sudo dnf install nasm binutils gdb
 nasm -f elf64 ./src/hello.asm -o ./obj/hello.o
 ```
 
-Compilation is the process of converting your assembly code into an object file (`.o`), which contains machine code but is not yet a complete executable. An object file can be linked with other object files to create a final executable.
+Compilation converts your assembly code into an **object file** (`.o`). The object file contains the assembled machine code, but it is not yet a complete executable. Here is what is inside:
+
+- **Machine code bytes** for each instruction, already encoded
+- **A symbol table** listing labels (like `_start`, `message`) and their offsets within the file
+- **Relocation entries** for any reference whose final address isn't known yet
+
+If you disassemble an object file, you will see placeholder addresses (all zeros) because the final memory layout has not been decided:
+
+```sh
+objdump -d hello.o
+```
+
+```
+hello.o:     file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <_start>:
+   0:   b8 01 00 00 00          mov    $0x1,%eax
+   5:   bf 01 00 00 00          mov    $0x1,%edi
+   a:   48 be 00 00 00 00 00    movabs $0x0,%rsi
+  11:   00 00 00
+  14:   ba 0e 00 00 00          mov    $0xe,%edx
+  19:   0f 05                   syscall
+  1b:   b8 3c 00 00 00          mov    $0x3c,%eax
+  20:   bf 00 00 00 00          mov    $0x0,%edi
+  25:   0f 05                   syscall
+```
+
+Notice `movabs $0x0,%rsi` at offset `a` and the zeros in the machine code bytes `00 00 00 00 00 00 00 00`. The string address has not been filled in yet. To see what needs to be resolved, use the relocation table:
+
+```sh
+objdump -r hello.o
+```
+
+```
+RELOCATION RECORDS FOR [.text]:
+OFFSET           TYPE              VALUE
+000000000000000a R_X86_64_64       message
+```
+
+This tells you: at offset `0xa` in the `.text` section, fill in the absolute address of the `message` label.
 
 > [!NOTE]
-> The `-f elf64` flag tells NASM to generate a 64-bit ELF object file. If you are on a 32-bit system, use `-f elf32` instead. On Windows, you can use `-f win64` or `-f win32` depending on your target.
+> The `-f elf64` flag tells NASM to generate a 64-bit ELF object file. On 32-bit Linux use `-f elf32`. On Windows: `-f win64` or `-f win32`.
 
 ### To link the object files into an executable
 
@@ -46,7 +126,28 @@ Compilation is the process of converting your assembly code into an object file 
 ld ./obj/hello.o -o ./out/hello
 ```
 
-Linking is the process of combining one or more object files into a single executable file. The linker resolves references between object files, assigns final memory addresses, and produces an executable that can be run by the operating system.
+**Linking** is the process that turns one or more object files into a runnable executable. The linker does three things:
+
+1. **Collects sections** from all input `.o` files and merges them into the output
+2. **Resolves relocations** by replacing placeholder addresses with the final memory addresses
+3. **Assigns load addresses** (e.g., `.text` at `0x401000`, `.data` at `0x402000`)
+
+Disassemble the linked executable and the placeholders are gone:
+
+```
+0000000000401000 <_start>:
+  401000:       b8 01 00 00 00          mov    $0x1,%eax
+  401005:       bf 01 00 00 00          mov    $0x1,%edi
+  40100a:       48 be 00 20 40 00 00    movabs $0x402000,%rsi
+  401011:       00 00 00
+  401014:       ba 0e 00 00 00          mov    $0xe,%edx
+  401019:       0f 05                   syscall
+  40101b:       b8 3c 00 00 00          mov    $0x3c,%eax
+  401020:       bf 00 00 00 00          mov    $0x0,%edi
+  401025:       0f 05                   syscall
+```
+
+Now `message` is at `0x402000` and the `movabs` instruction correctly encodes that address.
 
 ### To run the compiled binary
 
@@ -129,13 +230,15 @@ Disassembly of section .text:
 
 The [`library/`](./library) folder contains reusable assembly code. Every time I write assembly I feel like I'm reinventing C and it's standard library from first principles. It's included into programs using NASM's `%include` directive.
 
-| File                                                                                              | Description                                                                                                        |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [`syscalls.asm`](./library/syscalls.asm)                                                          | System call wrappers (`WRITE`, `READ`, `PRINT`, `EXIT` macros) and constants (syscall numbers, file descriptors)   |
-| [`strutils.asm`](./library/strutils.asm)                                                          | String utilities: `strlen`, `strcmp`, `itoa`, `atoi`, `strcpy`, `strcat`, `strfindchar`, base conversion, and more |
-| [`stdio.asm`](./library/stdio.asm)                                                                | I/O functions: `print_str`, `read_str`, `print_int`; builds on top of `syscalls.asm` and `strutils.asm`            |
-| [`test-assert.asm`](./library/test-assert.asm)                                                    | Unit test framework with `ASSERT_EQ`/`NE`/`LT`/`LE`/`GT`/`GE`/`TRUE`/`FALSE`/`STR_EQ` macros                       |
-| [`stdio.test.asm`](./library/stdio.test.asm) / [`strutils.test.asm`](./library/strutils.test.asm) | Test files for the library modules                                                                                 |
+| File                                                                                            | Description                                                                                                        |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [`syscalls.asm`](./library/syscalls.asm)                                                        | System call wrappers (`WRITE`, `READ`, `PRINT`, `EXIT` macros) and constants (syscall numbers, file descriptors)   |
+| [`strutils.asm`](./library/strutils.asm)                                                        | String utilities: `strlen`, `strcmp`, `itoa`, `atoi`, `strcpy`, `strcat`, `strfindchar`, base conversion, and more |
+| [`stdio.asm`](./library/stdio.asm)                                                              | I/O functions: `print_str`, `read_str`, `print_int`; builds on top of `syscalls.asm` and `strutils.asm`            |
+| [`bool.asm`](./library/bool.asm)                                                                | Boolean constants (`TRUE`, `FALSE`) and conversions (`bool_to_str`, `str_to_bool`)                                 |
+| [`test-assert.asm`](./library/test-assert.asm)                                                  | Unit test framework with `ASSERT_EQ`/`NE`/`LT`/`LE`/`GT`/`GE`/`TRUE`/`FALSE`/`STR_EQ` macros                       |
+| [`bool.test.asm`](./library/bool.test.asm) / [`strutils.test.asm`](./library/strutils.test.asm) | Test files for library modules                                                                                     |
+| [`TESTING.md`](./library/TESTING.md)                                                            | Test framework documentation                                                                                       |
 
 ### Debugging
 
@@ -294,18 +397,53 @@ A standard assembly program is divided into distinct sections:
 
 ### The ELF Binary Format
 
-When `nasm` and `ld` finish their work, the result is an **ELF** (Executable and Linkable Format) binary; the standard executable format on Linux. Every ELF file starts with the magic bytes `7f 45 4c 46` (`.ELF` in ASCII):
+When `nasm` and `ld` finish their work, the result is an **ELF** (Executable and Linkable Format) binary; the standard executable format on Linux. Every ELF file starts with the magic bytes `7f 45 4c 46` (`.ELF` in ASCII).
+
+The layout of a linked ELF executable looks roughly like this:
+
+```
++----------------------------+
+| ELF Header (64 bytes)      |  <- starts with 7f 45 4c 46
++----------------------------+
+| Program Headers            |  <- tells the kernel what to load and where
+| (aka segment table)        |
++----------------------------+
+| .text section              |  <- your code (read + execute)
++----------------------------+
+| .rodata / .data section    |  <- constants and initialized data (read + write)
++----------------------------+
+| .bss (not in file,         |  <- zero-initialized data, allocated at load time
+|      allocated at runtime) |
++----------------------------+
+| Section Header Table       |  <- used by linkers and debuggers, not needed at runtime
++----------------------------+
+```
+
+An ELF has two structural views, serving different stages of the program's life:
+
+**At link time** the linker works with **sections** (`.text`, `.data`, `.bss`, debug strings, etc.). These organize the content within object files so the linker can merge them. Inspect with `readelf -S <binary>`.
+
+**At load time** the kernel uses **segments** (a.k.a. program headers) to decide what to map into memory, with what permissions, and at what address. Each segment is one or more sections grouped by permission. For example, `.text` and `.rodata` often go into a single read-only segment; `.data` and `.bss` go into a read-write segment. Inspect with `readelf -l <binary>`.
+
+The `xxd` hexdump of the ELF header:
 
 ```
 00000000: 7f45 4c46 0201 0100 0000 0000 0000 0000  .ELF............
 ```
 
-An ELF has two key structural views:
+The first 16 bytes break down as:
 
-1. **Segments**: describe how the binary is loaded into memory at runtime (e.g., `.text` mapped as read+execute, `.data` as read+write). You can inspect them with `readelf -l <binary>`.
-2. **Sections**: describe the internal layout within the file (`.text`, `.data`, `.bss`, debug info, etc.). These are what the linker works with. Inspect with `readelf -S <binary>`.
+| Offset    | Bytes      | Meaning                               |
+| --------- | ---------- | ------------------------------------- |
+| 0x00      | `7f`       | ELF magic byte 0                      |
+| 0x01      | `45 4c 46` | `E` `L` `F` in ASCII                  |
+| 0x04      | `02`       | 64-bit format (1 = 32-bit)            |
+| 0x05      | `01`       | Little-endian (2 = big-endian)        |
+| 0x06      | `01`       | ELF version                           |
+| 0x07      | `00`       | OS/ABI (0 = System V, no special ABI) |
+| 0x08-0x0f | `00...`    | Padding bytes                         |
 
-The linker (`ld`) merges your object files into an ELF, resolves symbol addresses, and decides the final memory layout.
+The first two bytes `0x7f` then `ELF` are the universal signature that identifies any ELF file. The `02` tells you it is 64-bit, `01` tells you it is little-endian (which x86-64 always is).
 
 ### Linux Syscalls
 
