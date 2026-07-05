@@ -250,6 +250,21 @@ A standard assembly program is divided into distinct sections:
 - `section .bss`: This section is used for declaring variables that are not initialized. (e.g. a buffer to store user input at runtime)
 - `section .text`: This section contains the actual code (instructions) that the CPU will execute. It is where you write the logic of your program.
 
+### The ELF Binary Format
+
+When `nasm` and `ld` finish their work, the result is an **ELF** (Executable and Linkable Format) binary; the standard executable format on Linux. Every ELF file starts with the magic bytes `7f 45 4c 46` (`.ELF` in ASCII):
+
+```
+00000000: 7f45 4c46 0201 0100 0000 0000 0000 0000  .ELF............
+```
+
+An ELF has two key structural views:
+
+1. **Segments**: describe how the binary is loaded into memory at runtime (e.g., `.text` mapped as read+execute, `.data` as read+write). You can inspect them with `readelf -l <binary>`.
+2. **Sections**: describe the internal layout within the file (`.text`, `.data`, `.bss`, debug info, etc.). These are what the linker works with. Inspect with `readelf -S <binary>`.
+
+The linker (`ld`) merges your object files into an ELF, resolves symbol addresses, and decides the final memory layout.
+
 ### Linux Syscalls
 
 Assembly can't print to the screen or read a file on its own; It has to ask the operating-system (linux) to do it. This is done using **syscalls** (system calls). A syscall is a request to the kernel to perform a specific operation on behalf of the program. Each syscall has a unique number and may require specific arguments.
