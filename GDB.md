@@ -117,7 +117,7 @@ $4 = 150 '\226'
 (gdb) x/10i $rip
 =>  0x401000 <_start>:      mov     rdi, 0x402000
     0x401007 <_start+7>     mov     rsi, 0x5
-    ox40100e <_start+14>:   call    0x401050 <calculate_sum> 
+    0x40100e <_start+14>:   call    0x401050 <calculate_sum> 
 ```
 
 ### Show string
