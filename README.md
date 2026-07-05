@@ -133,7 +133,7 @@ Different architectures need different assembly as they have different registers
 
 #### `80386` (1986): The 32-bit Revolution
 
-- 32-bit Registers: `EAX`, `EBX`, `ECX`, `RDX` etc.
+- 32-bit Registers: `EAX`, `EBX`, `ECX`, `EDX` etc.
 - Addressable RAM: 4GB
 - This is often called **IA-32** (Intel Architecture, 32-bit) or just **x86**
 
