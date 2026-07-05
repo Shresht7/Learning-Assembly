@@ -175,8 +175,12 @@ section .data
 ;
 ; Asserts that the condition is true (non-zero). If it is false (zero),
 ; it prints a failure message with the expected and actual values, along with a description.
+;
+; NOTE: Uses strict equality to 1 (`cmp condition, 1; je`), not a general nonzero check.
+; This is fine when functions return canonical TRUE (1) / FALSE (0), but will reject
+; other truthy values (e.g., ASSERT_TRUE 2 would fail).
 %macro ASSERT_TRUE 2
-    _ASSERT_BASE %1, 1, %2, je              ; Passes if true (je)
+    _ASSERT_BASE %1, 1, %2, je              ; Passes if condition == 1
 %endmacro
 
 ; ASSERT_FALSE
@@ -186,8 +190,10 @@ section .data
 ;
 ; Asserts that the condition is false (zero). If it is true (non-zero),
 ; it prints a failure message with the expected and actual values, along with a description.
+;
+; NOTE: Uses strict equality to 0 (`cmp condition, 0; je`), not a general zero check.
 %macro ASSERT_FALSE 2
-    _ASSERT_BASE %1, 0, %2, je              ; Passes if false (je)
+    _ASSERT_BASE %1, 0, %2, je              ; Passes if condition == 0
 %endmacro
 
 ; ASSERT_STR_EQ
