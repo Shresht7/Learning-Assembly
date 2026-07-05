@@ -12,6 +12,7 @@ Goes without saying, **do not** use this for anything serious. This is just a pe
 - [`stdio`](#stdio): Standard I/O
 - [`strutils`](#strutils): String Utilities
 - [`bool`](#bool): Boolean Helpers
+- [`testing`](TESTING.md): Test Framework
 
 ---
 
