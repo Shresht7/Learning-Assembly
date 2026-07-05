@@ -10,7 +10,8 @@ Goes without saying, **do not** use this for anything serious. This is just a pe
 
 - [`syscalls`](#syscalls): Linux x86-64 syscalls
 - [`stdio`](#stdio): Standard I/O
-- [`strutils`](#strutils) String Utilities
+- [`strutils`](#strutils): String Utilities
+- [`bool`](#bool): Boolean Helpers
 
 ---
 
@@ -466,4 +467,62 @@ section .text
     cmp rax, 1
     je .starts_with
     jne .does_not_start_with
+```
+
+---
+
+## BOOL
+
+Boolean helper constants and conversions, similar to C's `stdbool.h`.
+
+### Constants
+
+- `TRUE` (1): Represents a boolean true value.
+- `FALSE` (0): Represents a boolean false value.
+
+### Subroutines
+
+#### `bool_to_str(val rdi: int) -> str_ptr rax: *char`
+
+Converts a truthy/falsy integer to a pointer to `"true"` or `"false"` string.
+
+##### Parameters:
+
+- [**`rdi`**] _`val`_: integer to convert (nonzero = truthy, zero = falsy)
+
+##### Returns:
+
+- [**`rax`**] _`str_ptr`_: pointer to the null-terminated string `"true"` or `"false"`
+
+#### `str_to_bool(string rdi: *char) -> result rax: int`
+
+Parses a null-terminated string as a boolean value.
+
+Case-sensitive: only the exact string `"true"` returns `TRUE`.
+
+##### Parameters:
+
+- [**`rdi`**] _`string`_: pointer to the null-terminated string
+
+##### Returns:
+
+- [**`rax`**] _`result`_:
+  - `1` (`TRUE`): The string is `"true"`
+  - `0` (`FALSE`): The string is not `"true"`
+
+##### Example:
+
+```asm
+section .data
+    my_val db "true", 0
+
+section .text
+    ; Parse "true" → TRUE (1)
+    mov rdi, my_val
+    call str_to_bool
+
+    ; Convert back to string pointer
+    mov rdi, rax
+    call bool_to_str
+    ; rax now points to "true"
 ```
