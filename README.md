@@ -492,11 +492,10 @@ Arg 7+: stack
 
 ## 📕 References
 
-- [NASM: The Netwide Assembler](https://www.nasm.us/)
-- [NASM: Docs](https://www.nasm.us/docs/3.01/)
-
 ### 📄 Manuals
 
+- [NASM: The Netwide Assembler](https://www.nasm.us/)
+- [NASM: Docs](https://www.nasm.us/docs/3.01/)
 - 📄 [Chromium Linux Syscalls Table](https://www.chromium.org/chromium-os/developer-library/reference/linux-constants/syscalls/#x86_64-64-bit)
 - 📄 [Linux Syscalls Table](https://lxr.linux.no/linux+v3.2/arch/x86/include/asm/unistd_64.h)
 
